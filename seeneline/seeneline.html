@@ -45,39 +45,51 @@
       }
 
       var seeni = 10  //kui palju on tarvis korjata
-      var w, h, d0, h0, r, v, ctx, pFill, treeImage, hero, seen, collected, keysdown, then
+      var canvasWidth, canvasHeight, treeImageWidth, treeImageHeight, verticalTrees, horizontalTrees, ctx, pFill,
+        treeImage, hero, seen, collected, keysdown, then
       var startTime = Date.now() //seente korjamise aja leidmiseks
+
+      randomTrees = []
 
       function initGame (images) {
 
 // Initialize the canvas
         var canvas = document.getElementById('gamecanvas')
         ctx = canvas.getContext('2d')
-        w = canvas.width
-        h = canvas.height
-        //console.log('w,h '+w+h);
+        canvasWidth = canvas.width
+        canvasHeight = canvas.height
+        //console.log('canvasWidth,canvasHeight '+canvasWidth+canvasHeight);
 //Ground
         //pFill = ctx.createPattern(images.ground, "repeat");
         //ctx.fillStyle = pFill;
-        //ctx.fillRect(0,0,w,h);
+        //ctx.fillRect(0,0,canvasWidth,canvasHeight);
+
         //Trees
         treeImage = images.treeSprite
-        d0 = treeImage.width //tree width
-        h0 = treeImage.height
-        v = Math.floor(w / d0)
-        r = Math.floor(h / d0)
+        treeImageWidth = treeImage.width
+        treeImageHeight = treeImage.height
+        horizontalTrees = Math.floor(canvasWidth / treeImageWidth)
+        verticalTrees = Math.floor(canvasHeight / treeImageHeight)
 
         hero = {
           sprite: images.heroSprite,
-          x: Math.floor(w / 2),  //to center
-          y: Math.floor(h / 2),
+          x: Math.floor(canvasWidth / 2),  //to center
+          y: Math.floor(canvasHeight / 2),
           speed: 2 // movement in pixels
         }
 
         seen = {
           sprite: images.seenSprite,
-          x: images.seenSprite.width + (Math.random() * (w - 2 * images.seenSprite.width)),
-          y: images.seenSprite.height + (Math.random() * (h - 2 * images.seenSprite.height))
+          x: images.seenSprite.width + (Math.random() * (canvasWidth - 2 * images.seenSprite.width)),
+          y: images.seenSprite.height + (Math.random() * (canvasHeight - 2 * images.seenSprite.height))
+        }
+
+        for (var i = 0; i < 50; i++) {
+          var randomTree = {
+            x: treeImage.width * Math.abs((Math.random() * (treeImageWidth - 2 * treeImage.width))),
+            y: treeImage.height * Math.abs((Math.random() * (treeImageHeight - 2 * treeImage.height)))
+          }
+          randomTrees = randomTrees.concat(randomTree)
         }
 
         collected = 0
@@ -95,10 +107,8 @@
           delete keysDown[e.keyCode]
         }, false)
 
-// Reset the game when the player catches a mushroom
-
 // Let's play this game!
-        drawTrees()
+//        drawTrees()
 //reset();
         then = Date.now()
         game()
@@ -107,41 +117,45 @@
 
       function drawTrees () {
 
-        for (var i = 0; i < v; i++) {
-          ctx.drawImage(treeImage, i * d0, 0)
-          ctx.drawImage(treeImage, i * d0, h - d0)
+        for (var i = 0; i < horizontalTrees; i++) {
+          ctx.drawImage(treeImage, i * treeImageWidth, 0)
+          ctx.drawImage(treeImage, i * treeImageWidth, canvasHeight - treeImageWidth)
         }
-        for (var j = 1; j < r; j++) {
-          ctx.drawImage(treeImage, 0, j * d0)
-          ctx.drawImage(treeImage, w - d0, j * d0)
+        for (var j = 1; j < verticalTrees; j++) {
+          ctx.drawImage(treeImage, 0, j * treeImageWidth)
+          ctx.drawImage(treeImage, canvasWidth - treeImageWidth, j * treeImageWidth)
+        }
+
+        for (var i in randomTrees) {
+          ctx.drawImage(treeImage, randomTrees[i].x, randomTrees[i].y)
         }
 
       }
       // Update game objects
       function update () {
-        if (38 in keysDown) { // Player holding up
+        if (87 in keysDown) { // Player holding up
           if (hero.y > 0)
             hero.y -= hero.speed
-          if (hero.y < d0) //can not go through trees!
-            hero.y = d0
+          if (hero.y < treeImageWidth) //can not go through trees!
+            hero.y = treeImageWidth
         }
-        if (40 in keysDown) { // Player holding down
-          if (hero.y < h - d0 - hero.sprite.height)
+        if (83 in keysDown) { // Player holding down
+          if (hero.y < canvasHeight - treeImageWidth - hero.sprite.height)
             hero.y += hero.speed
-          if (hero.y > h - d0 - hero.sprite.height)
-            hero.y = h - d0 - hero.sprite.height
+          if (hero.y > canvasHeight - treeImageWidth - hero.sprite.height)
+            hero.y = canvasHeight - treeImageWidth - hero.sprite.height
         }
-        if (37 in keysDown) { // Player holding left
+        if (65 in keysDown) { // Player holding left
           if (hero.x > 0)
             hero.x -= hero.speed
-          if (hero.x < d0)
-            hero.x = d0
+          if (hero.x < treeImageWidth)
+            hero.x = treeImageWidth
         }
-        if (39 in keysDown) { // Player holding right
-          if (hero.x < w - d0 - hero.sprite.width)
+        if (68 in keysDown) { // Player holding right
+          if (hero.x < canvasWidth - treeImageWidth - hero.sprite.width)
             hero.x += hero.speed
-          if (hero.x > w - d0 - hero.sprite.width)
-            hero.x = w - d0 - hero.sprite.width
+          if (hero.x > canvasWidth - treeImageWidth - hero.sprite.width)
+            hero.x = canvasWidth - treeImageWidth - hero.sprite.width
         }
 
         // Are they touching?
@@ -150,6 +164,7 @@
           reset()
         }
       }
+
       function collision (obj1, obj2) {
 
         return obj2.x <= (obj1.x + obj1.sprite.width) &&
@@ -160,7 +175,7 @@
       }
       // Draw everything
       function render () {
-        ctx.clearRect(0, 0, w, h)
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
         drawTrees()
         ctx.drawImage(hero.sprite, hero.x, hero.y)
         ctx.drawImage(seen.sprite, seen.x, seen.y)
@@ -172,16 +187,16 @@
         ctx.font = '14px Arial'
         ctx.textAlign = 'left'
         ctx.textBaseline = 'top'
-        ctx.strokeText(txt, d0, d0) //text, x,y
+        ctx.strokeText(txt, treeImageWidth, treeImageWidth) //text, x,y
       }
       var reset = function () {
         //Put hero to the center
-        hero.x = w / 2
-        hero.y = h / 2
+        hero.x = canvasWidth / 2
+        hero.y = canvasHeight / 2
         // Throw the mushroom somewhere on the screen randomly
         do {
-          seen.x = seen.sprite.width + (Math.random() * (w - 2 * seen.sprite.width))
-          seen.y = seen.sprite.height + (Math.random() * (h - 2 * seen.sprite.height))
+          seen.x = seen.sprite.width + (Math.random() * (canvasWidth - 2 * seen.sprite.width))
+          seen.y = seen.sprite.height + (Math.random() * (canvasHeight - 2 * seen.sprite.height))
         } while (collision(seen, hero))
       }
 
@@ -197,7 +212,7 @@
         }
         else {
           //ctx.fillStyle = '#AAEECC';
-          //ctx.fillRect(d0,d0,w-2*d0,d0);
+          //ctx.fillRect(treeImageWidth,treeImageWidth,canvasWidth-2*treeImageWidth,treeImageWidth);
           var time = Math.round(((Date.now() - startTime) / 1000))
           showScore('Said ' + time + ' sekundiga ' + collected + ' seent!')
         }
