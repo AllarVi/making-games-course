@@ -1,0 +1,22 @@
+{
+  "name": "idx5060",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AllarVi/making-games-course.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AllarVi/making-games-course/issues"
+  },
+  "homepage": "https://github.com/AllarVi/making-games-course#readme",
+  "devDependencies": {
+    "jest": "^21.1.0"
+  }
+}
