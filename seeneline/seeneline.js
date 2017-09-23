@@ -14,27 +14,31 @@ function loadImages (sources, callback) {
   let loadedImages = 0
   let numOfImages = 0
 
-  for (var src in sources) {
+  for (let src in sources) {
 //          console.log("Img loaded: " + src);
     numOfImages++
   }
 
-  for (var src in sources) {
-    images[src] = new Image()
-    images[src].onload = function () {
-      if (++loadedImages >= numOfImages) {
+  for (let src in sources) {
+    if (sources.hasOwnProperty(src)) {
+      images[src] = new Image()
+      images[src].onload = function () {
+        if (++loadedImages >= numOfImages) {
 //              Call initGame when all images loaded
-        callback(images)
+          callback(images)
+        }
       }
+      images[src].src = sources[src]
+    } else {
+      console.log('Error iterating sources: ', sources)
     }
-    images[src].src = sources[src]
   }
 
 }
 
 let seeni = 10  //kui palju on tarvis korjata
-let canvasWidth, canvasHeight, treeImageWidth, treeImageHeight, verticalTrees, horizontalTrees, ctx, pFill,
-  treeImage, hero, collected, keysdown, then
+let canvasWidth, canvasHeight, treeImageWidth, treeImageHeight, verticalTrees, horizontalTrees, ctx,
+  treeImage, hero, collected, then
 let startTime = Date.now() //seente korjamise aja leidmiseks
 
 const seenedMax = 5
@@ -81,7 +85,7 @@ function initGame (images) {
     seened.push(seen)
   })
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 100; i++) {
     let randomTree = {
       sprite: images.treeSprite,
       x: images.treeSprite.width + (Math.random() * (canvasWidth - 2 * images.treeSprite.width)),
@@ -135,8 +139,8 @@ function update () {
   if (87 in keysDown) { // Player holding up
     if (hero.y > 0)
       hero.y -= hero.speed
-    if (hero.y < treeImageWidth) //can not go through trees!
-      hero.y = treeImageWidth
+    if (hero.y < treeImageHeight) //can not go through trees!
+      hero.y = treeImageHeight
   }
   if (83 in keysDown) { // Player holding down
     if (hero.y < canvasHeight - treeImageWidth - hero.sprite.height)
@@ -168,6 +172,8 @@ function update () {
   randomTrees.forEach(tree => {
     if (collision(hero, tree)) {
       console.log('Tree collision')
+      hero.x += 5
+      hero.y += 5
     } else {
     }
   })
