@@ -1,6 +1,6 @@
 let sources = {
   treeSprite: 'images/tree.png',
-  heroSprite: 'images/hero.png',
+  heroSprite: 'images/hero_ani.png',
   seenSprite: 'images/seen2.png'
 }
 
@@ -68,12 +68,13 @@ function initGame (images) {
   horizontalTrees = Math.floor(canvasWidth / treeImageWidth)
   verticalTrees = Math.floor(canvasHeight / treeImageHeight)
 
-  hero = {
-    sprite: images.heroSprite,
-    x: Math.floor(canvasWidth / 2),  //to center
-    y: Math.floor(canvasHeight / 2),
-    speed: 5 // movement in pixels
-  }
+  hero = new AnimatedCharacter(images.heroSprite, treeImageWidth, treeImageHeight, 2, 'walking', 12, canvasWidth, canvasHeight)
+  // hero = {
+  //   sprite: images.heroSprite,
+  //   x: Math.floor(canvasWidth / 2),  //to center
+  //   y: Math.floor(canvasHeight / 2),
+  //   speed: 5 // movement in pixels
+  // }
 
   Array.from(Array(seenedMax).keys()).forEach(() => {
     let seen = {
@@ -135,31 +136,51 @@ function drawTrees () {
 }
 
 // Update game objects
-function update () {
-  if (87 in keysDown) { // Player holding up
-    if (hero.y > 0)
-      hero.y -= hero.speed
+function update (modifier) {
+  if (38 in keysDown || 87 in keysDown) { // Player holding up
+    if (hero.y > 0) {
+      hero.y -= hero.speed * modifier
+      hero.state = 'walking'
+    }
     if (hero.y < treeImageHeight) //can not go through trees!
+    {
       hero.y = treeImageHeight
+      hero.state = 'still'
+    }
   }
-  if (83 in keysDown) { // Player holding down
-    if (hero.y < canvasHeight - treeImageWidth - hero.sprite.height)
-      hero.y += hero.speed
-    if (hero.y > canvasHeight - treeImageWidth - hero.sprite.height)
-      hero.y = canvasHeight - treeImageWidth - hero.sprite.height
+  if (40 in keysDown || 83 in keysDown) { // Player holding down
+    if (hero.y < canvasHeight - treeImageHeight - hero.height) {
+      hero.y += hero.speed * modifier
+      hero.state = 'walking'
+    }
+    if (hero.y > canvasHeight - treeImageHeight - hero.height) {
+      hero.y = canvasHeight - treeImageHeight - hero.height
+      hero.state = 'still'
+    }
   }
-  if (65 in keysDown) { // Player holding left
-    if (hero.x > 0)
-      hero.x -= hero.speed
-    if (hero.x < treeImageWidth)
+  if ((37 in keysDown) || (65 in keysDown)) { // Player holding left
+    if (hero.x > 0) {
+      hero.x -= hero.speed * modifier
+      hero.state = 'walking'
+    }
+    if (hero.x < treeImageWidth) {
       hero.x = treeImageWidth
+      hero.state = 'still'
+    }
   }
-  if (68 in keysDown) { // Player holding right
-    if (hero.x < canvasWidth - treeImageWidth - hero.sprite.width)
-      hero.x += hero.speed
-    if (hero.x > canvasWidth - treeImageWidth - hero.sprite.width)
-      hero.x = canvasWidth - treeImageWidth - hero.sprite.width
+  if ((39 in keysDown) || (68 in keysDown)) { // Player holding right
+    if (hero.x < canvasWidth - treeImageHeight - hero.width) {
+      hero.x += hero.speed * modifier
+      hero.state = 'walking'
+    }
+    if (hero.x > canvasWidth - treeImageHeight - hero.width) {
+      hero.x = canvasWidth - treeImageHeight - hero.width
+      hero.state = 'still'
+    }
   }
+
+  if (!(37 in keysDown) && !(38 in keysDown) && !(39 in keysDown) && !(40 in keysDown) && !(83 in keysDown) && !(65 in keysDown) && !(68 in keysDown) && !(87 in keysDown))
+    hero.state = 'still'
 
   // Are they touching?
   seened.forEach(seen => {
@@ -181,9 +202,9 @@ function update () {
 
 function collision (obj1, obj2) {
 
-  return obj2.x <= (obj1.x + obj1.sprite.width / 2) &&
+  return obj2.x <= (obj1.x + obj1.width / 2) &&
     obj1.x <= (obj2.x + obj2.sprite.width / 2) &&
-    obj2.y <= (obj1.y + obj1.sprite.height / 2) &&
+    obj2.y <= (obj1.y + obj1.height / 2) &&
     obj1.y <= (obj2.y + obj2.sprite.height / 2)
 
 }
@@ -192,7 +213,7 @@ function collision (obj1, obj2) {
 function render () {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight)
   drawTrees()
-  ctx.drawImage(hero.sprite, hero.x, hero.y)
+  hero.draw()
   seened.forEach(seen => {
     ctx.drawImage(seen.sprite, seen.x, seen.y)
   })
@@ -226,17 +247,15 @@ let reset = function (seen) {
 
 // The main game loop
 let game = function () {
-  //var now = Date.now();
-  //var delta = now - then;
+  let now = Date.now()
+  let delta = now - then
   if (collected < seeni) {
-    update()
+    update(delta / 100)
     render()
-    //then = now;
-    setTimeout(game, 1000 / 60)  //millisekundid - 60 kaadrit sekundis
+    then = now
+    requestAnimationFrame(game)
   }
   else {
-    //ctx.fillStyle = '#AAEECC';
-    //ctx.fillRect(treeImageWidth,treeImageWidth,canvasWidth-2*treeImageWidth,treeImageWidth);
     let time = Math.round(((Date.now() - startTime) / 1000))
     showScore('Said ' + time + ' sekundiga ' + collected + ' seent!')
   }
