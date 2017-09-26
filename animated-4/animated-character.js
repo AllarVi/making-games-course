@@ -13,6 +13,7 @@ class AnimatedCharacter {
     this.y = canvasWidth / 2
     this.x = canvasHeight / 2
     this.state = state
+    this.face_direction = 'front'
   }
 
   contextDrawImage (sx, sy) {
@@ -36,9 +37,17 @@ class AnimatedCharacter {
       let sy_walking = this.sy
       let sx_walking = this.sx + this.sx * this.actualFrame
       this.contextDrawImage(sx_walking, sy_walking)
+    } else if (this.state === 'right_still') {
+      let sy_walking = this.sy
+      let sx_walking = 0
+      this.contextDrawImage(sx_walking, sy_walking)
     } else if (this.state === 'back_walking') {
       let sy_walking = this.sy * 2
       let sx_walking = this.sx + this.sx * this.actualFrame
+      this.contextDrawImage(sx_walking, sy_walking)
+    } else if (this.state === 'back_still') {
+      let sy_walking = this.sy * 2
+      let sx_walking = 0
       this.contextDrawImage(sx_walking, sy_walking)
     } else if (this.state === 'front_walking') {
       let sy_walking = this.sy * 3

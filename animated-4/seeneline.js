@@ -136,10 +136,11 @@ function drawTrees () {
 
 // Update game objects
 function update (modifier) {
-  if (38 in keysDown || 87 in keysDown) { // Player holding up
+  if (keys.W in keysDown) {
     if (hero.y > 0) {
       hero.y -= hero.speed * modifier
-      hero.state = 'back_walking'
+      hero.face_direction = 'back'
+      hero.state = hero.face_direction + hero_mvmt.WALKING
     }
     if (hero.y < treeImageHeight) //can not go through trees!
     {
@@ -147,30 +148,33 @@ function update (modifier) {
       hero.state = 'front_still'
     }
   }
-  if (40 in keysDown || 83 in keysDown) { // Player holding down
+  if (keys.S in keysDown) {
     if (hero.y < canvasHeight - treeImageHeight - hero.height) {
       hero.y += hero.speed * modifier
-      hero.state = 'front_walking'
+      hero.face_direction = 'front'
+      hero.state = hero.face_direction + hero_mvmt.WALKING
     }
     if (hero.y > canvasHeight - treeImageHeight - hero.height) {
       hero.y = canvasHeight - treeImageHeight - hero.height
       hero.state = 'front_still'
     }
   }
-  if ((37 in keysDown) || (65 in keysDown)) { // Player holding left
+  if (keys.A in keysDown) {
     if (hero.x > 0) {
       hero.x -= hero.speed * modifier
-      hero.state = 'left_walking'
+      hero.face_direction = 'left'
+      hero.state = hero.face_direction + hero_mvmt.WALKING
     }
     if (hero.x < treeImageWidth) {
       hero.x = treeImageWidth
       hero.state = 'left_still'
     }
   }
-  if ((39 in keysDown) || (68 in keysDown)) { // Player holding right
+  if (keys.D in keysDown) {
     if (hero.x < canvasWidth - treeImageHeight - hero.width) {
       hero.x += hero.speed * modifier
-      hero.state = 'right_walking'
+      hero.face_direction = 'right'
+      hero.state = hero.face_direction + hero_mvmt.WALKING
     }
     if (hero.x > canvasWidth - treeImageHeight - hero.width) {
       hero.x = canvasWidth - treeImageHeight - hero.width
@@ -178,8 +182,8 @@ function update (modifier) {
     }
   }
 
-  if (!(37 in keysDown) && !(38 in keysDown) && !(39 in keysDown) && !(40 in keysDown) && !(83 in keysDown) && !(65 in keysDown) && !(68 in keysDown) && !(87 in keysDown))
-    hero.state = 'front_still'
+  if (!(keys.S in keysDown) && !(keys.A in keysDown) && !(keys.D in keysDown) && !(keys.W in keysDown))
+    hero.state = hero.face_direction + '_still'
 
   // Are they touching?
   seened.forEach(seen => {
