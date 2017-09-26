@@ -15,18 +15,47 @@ class AnimatedCharacter {
     this.state = state
   }
 
+  contextDrawImage (sx, sy) {
+    ctx.drawImage(this.image, sx, sy, this.sx, this.sy, this.x, this.y, this.sx, this.sy)
+  }
+
   draw () {
-    if (this.state === 'still')
-      ctx.drawImage(this.image, 0, this.sy * 2, this.sx, this.sy, this.x, this.y, this.sx, this.sy)
-    else {   //state == "walking"
-      console.log('actualFrame ', this.actualFrame)
-      ctx.drawImage(this.image, 0, this.sy * this.actualFrame, this.sx, this.sy, this.x, this.y, this.sx, this.sy)
-      this.step += 1
-      if (this.step === this.speed) {
-        this.actualFrame += 1
-        this.actualFrame = this.actualFrame % this.n_frames
-        this.step = 0
-      }
+    if (this.state === 'front_still') {
+      let sy_still = this.sy * 3
+      let sx_still = 0
+      this.contextDrawImage(sx_still, sy_still)
+    } else if (this.state === 'left_walking') {
+      let sy_walking = 0
+      let sx_walking = this.sx + this.sx * this.actualFrame
+      this.contextDrawImage(sx_walking, sy_walking)
+    } else if (this.state === 'left_still') {
+      let sy_walking = 0
+      let sx_walking = 0
+      this.contextDrawImage(sx_walking, sy_walking)
+    } else if (this.state === 'right_walking') {
+      let sy_walking = this.sy
+      let sx_walking = this.sx + this.sx * this.actualFrame
+      this.contextDrawImage(sx_walking, sy_walking)
+    } else if (this.state === 'back_walking') {
+      let sy_walking = this.sy * 2
+      let sx_walking = this.sx + this.sx * this.actualFrame
+      this.contextDrawImage(sx_walking, sy_walking)
+    } else if (this.state === 'front_walking') {
+      let sy_walking = this.sy * 3
+      let sx_walking = this.sx + this.sx * this.actualFrame
+      this.contextDrawImage(sx_walking, sy_walking)
+    }
+
+    // Frame switching
+    // speed 12, step 0-12
+    this.step += 1
+    if (this.step === this.speed) {
+      // actualFrame 0-1
+      this.actualFrame += 1
+
+      // actualFrame = x % 4
+      this.actualFrame = this.actualFrame % this.n_frames
+      this.step = 0
     }
   }
 }

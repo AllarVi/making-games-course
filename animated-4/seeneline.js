@@ -1,6 +1,6 @@
 let sources = {
   treeSprite: 'images/tree.png',
-  heroSprite: 'images/hero_ani.png',
+  heroSprite: 'images/tydruk_ani.png',
   seenSprite: 'images/seen2.png'
 }
 
@@ -33,7 +33,6 @@ function loadImages (sources, callback) {
       console.log('Error iterating sources: ', sources)
     }
   }
-
 }
 
 let seeni = 10  //kui palju on tarvis korjata
@@ -68,7 +67,7 @@ function initGame (images) {
   horizontalTrees = Math.floor(canvasWidth / treeImageWidth)
   verticalTrees = Math.floor(canvasHeight / treeImageHeight)
 
-  hero = new AnimatedCharacter(images.heroSprite, treeImageWidth, treeImageHeight, 2, 'walking', 12, canvasWidth, canvasHeight)
+  hero = new AnimatedCharacter(images.heroSprite, 50, 72, 4, 'front_still', 12, canvasWidth, canvasHeight)
   // hero = {
   //   sprite: images.heroSprite,
   //   x: Math.floor(canvasWidth / 2),  //to center
@@ -140,47 +139,47 @@ function update (modifier) {
   if (38 in keysDown || 87 in keysDown) { // Player holding up
     if (hero.y > 0) {
       hero.y -= hero.speed * modifier
-      hero.state = 'walking'
+      hero.state = 'back_walking'
     }
     if (hero.y < treeImageHeight) //can not go through trees!
     {
       hero.y = treeImageHeight
-      hero.state = 'still'
+      hero.state = 'front_still'
     }
   }
   if (40 in keysDown || 83 in keysDown) { // Player holding down
     if (hero.y < canvasHeight - treeImageHeight - hero.height) {
       hero.y += hero.speed * modifier
-      hero.state = 'walking'
+      hero.state = 'front_walking'
     }
     if (hero.y > canvasHeight - treeImageHeight - hero.height) {
       hero.y = canvasHeight - treeImageHeight - hero.height
-      hero.state = 'still'
+      hero.state = 'front_still'
     }
   }
   if ((37 in keysDown) || (65 in keysDown)) { // Player holding left
     if (hero.x > 0) {
       hero.x -= hero.speed * modifier
-      hero.state = 'walking'
+      hero.state = 'left_walking'
     }
     if (hero.x < treeImageWidth) {
       hero.x = treeImageWidth
-      hero.state = 'still'
+      hero.state = 'left_still'
     }
   }
   if ((39 in keysDown) || (68 in keysDown)) { // Player holding right
     if (hero.x < canvasWidth - treeImageHeight - hero.width) {
       hero.x += hero.speed * modifier
-      hero.state = 'walking'
+      hero.state = 'right_walking'
     }
     if (hero.x > canvasWidth - treeImageHeight - hero.width) {
       hero.x = canvasWidth - treeImageHeight - hero.width
-      hero.state = 'still'
+      hero.state = 'front_still'
     }
   }
 
   if (!(37 in keysDown) && !(38 in keysDown) && !(39 in keysDown) && !(40 in keysDown) && !(83 in keysDown) && !(65 in keysDown) && !(68 in keysDown) && !(87 in keysDown))
-    hero.state = 'still'
+    hero.state = 'front_still'
 
   // Are they touching?
   seened.forEach(seen => {
