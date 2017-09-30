@@ -10,8 +10,8 @@ class AnimatedCharacter {
     this.actualFrame = 0
     this.speed = speed  //how many *game* frames a frame is shown
     this.step = 0
-    this.y = canvasWidth / 2
-    this.x = canvasHeight / 2
+    this.y = Math.floor(canvasWidth / 2)
+    this.x = Math.floor(canvasHeight / 2)
     this.state = state
     this.face_direction = 'front'
   }

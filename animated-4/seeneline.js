@@ -1,10 +1,14 @@
 let sources = {
   treeSprite: 'images/tree.png',
   heroSprite: 'images/tydruk_ani.png',
-  seenSprite: 'images/seen2.png'
+  seen0Sprite: 'images/seen0.png',
+  seen1Sprite: 'images/seen1.png',
+  seen2Sprite: 'images/seen2.png',
+  stumpSprite: 'images/kand32.png',
+  pebbleSprite: 'images/kivi32.png',
 }
 
-//      NB! The function is "onload" and not "onLoad"
+// NB! The function is "onload" and not "onLoad"
 window.onload = function () {
   loadImages(sources, initGame)  // calls initGame after *all* images have finished loading
 }
@@ -24,7 +28,7 @@ function loadImages (sources, callback) {
       images[src] = new Image()
       images[src].onload = function () {
         if (++loadedImages >= numOfImages) {
-//              Call initGame when all images loaded
+          // Call initGame when all images loaded
           callback(images)
         }
       }
@@ -40,27 +44,57 @@ let canvasWidth, canvasHeight, treeImageWidth, treeImageHeight, verticalTrees, h
   treeImage, hero, collected, then
 let startTime = Date.now() //seente korjamise aja leidmiseks
 
-const seenedMax = 5
+const MUSHROOMS_MAX = 5
 let seened = []
 
-randomTrees = []
+const OBSTACLES_MAX = 50
+let obstacles = []
+let keysDown = {}
+
+let generateObstacles = function (images) {
+  let sprite, x, y, obstacle
+  for (let i = 0; i < OBSTACLES_MAX; i++) {
+    sprite = Utils.getRandomSprite([images.pebbleSprite, images.stumpSprite])
+    x = images.pebbleSprite.width + (Math.random() * (canvasWidth - 2 * images.pebbleSprite.width))
+    y = images.pebbleSprite.height + (Math.random() * (canvasHeight - 2 * images.pebbleSprite.height))
+    obstacle = new Obstacle(sprite, x, y)
+
+    obstacles.push(obstacle)
+  }
+}
+
+let generateMushrooms = function (images) {
+  let sprite, x, y, mushroom, good
+  for (let i = 0; i < MUSHROOMS_MAX; i++) {
+
+    if (Math.random() < 0.3) {
+      sprite = images.seen0Sprite  //kärbseseen !
+      good = false
+    }
+    else {
+      sprite = Utils.getRandomSprite([images.seen1Sprite, images.seen2Sprite])
+      good = true
+    }
+
+    x = sprite.width + (Math.random() * (canvasWidth - 2 * sprite.width))
+    y = sprite.height + (Math.random() * (canvasHeight - 2 * sprite.height))
+
+    mushroom = new Mushroom(sprite, x, y, good)
+
+    seened.push(mushroom)
+  }
+}
 
 function initGame (images) {
-
-// Initialize the canvas
+  // Initialize the canvas
   let canvas = document.getElementById('gamecanvas')
   ctx = canvas.getContext('2d')
   canvas.width = innerWidth
   canvas.height = innerHeight
   canvasWidth = canvas.width
   canvasHeight = canvas.height
-  //console.log('canvasWidth,canvasHeight '+canvasWidth+canvasHeight);
-//Ground
-  //pFill = ctx.createPattern(images.ground, "repeat");
-  //ctx.fillStyle = pFill;
-  //ctx.fillRect(0,0,canvasWidth,canvasHeight);
 
-  //Trees
+  // Trees
   treeImage = images.treeSprite
   treeImageWidth = treeImage.width
   treeImageHeight = treeImage.height
@@ -68,37 +102,14 @@ function initGame (images) {
   verticalTrees = Math.floor(canvasHeight / treeImageHeight)
 
   hero = new AnimatedCharacter(images.heroSprite, 50, 72, 4, 'front_still', 12, canvasWidth, canvasHeight)
-  // hero = {
-  //   sprite: images.heroSprite,
-  //   x: Math.floor(canvasWidth / 2),  //to center
-  //   y: Math.floor(canvasHeight / 2),
-  //   speed: 5 // movement in pixels
-  // }
 
-  Array.from(Array(seenedMax).keys()).forEach(() => {
-    let seen = {
-      sprite: images.seenSprite,
-      x: images.seenSprite.width + (Math.random() * (canvasWidth - 2 * images.seenSprite.width)),
-      y: images.seenSprite.height + (Math.random() * (canvasHeight - 2 * images.seenSprite.height))
-    }
-
-    seened.push(seen)
-  })
-
-  for (let i = 0; i < 100; i++) {
-    let randomTree = {
-      sprite: images.treeSprite,
-      x: images.treeSprite.width + (Math.random() * (canvasWidth - 2 * images.treeSprite.width)),
-      y: images.treeSprite.height + (Math.random() * (canvasHeight - 2 * images.treeSprite.height))
-    }
-    randomTrees.push(randomTree)
-  }
+  generateMushrooms(images)
+  // Generate obstacles
+  generateObstacles(images)
 
   collected = 0
 
-// Handle keyboard controls
-  keysDown = {}
-
+  // Handle keyboard controls
   addEventListener('keydown', function (e) {
     e.preventDefault()
     keysDown[e.keyCode] = true
@@ -109,12 +120,8 @@ function initGame (images) {
     delete keysDown[e.keyCode]
   }, false)
 
-// Let's play this game!
-//        drawTrees()
-//reset();
   then = Date.now()
   game()
-//setTimeout(main,30);
 }
 
 function drawTrees () {
@@ -128,9 +135,9 @@ function drawTrees () {
     ctx.drawImage(treeImage, canvasWidth - treeImageWidth, j * treeImageWidth)
   }
 
-  for (let i in randomTrees) {
-    ctx.drawImage(treeImage, randomTrees[i].x, randomTrees[i].y)
-  }
+  obstacles.forEach(obstacle => {
+    ctx.drawImage(obstacle.sprite, obstacle.x, obstacle.y)
+  })
 
 }
 
@@ -185,30 +192,27 @@ function update (modifier) {
   if (!(keys.S in keysDown) && !(keys.A in keysDown) && !(keys.D in keysDown) && !(keys.W in keysDown))
     hero.state = hero.face_direction + '_still'
 
-  // Are they touching?
+  // Mushroom collision
   seened.forEach(seen => {
     if (collision(hero, seen)) {
       ++collected
-      reset(seen)
+      resetMushroom(seen)
     }
   })
 
-  randomTrees.forEach(tree => {
+  // Obstacle collision
+  obstacles.forEach(tree => {
     if (collision(hero, tree)) {
-      console.log('Tree collision')
-      hero.x += 5
-      hero.y += 5
-    } else {
+      console.log('Obstacle collision')
     }
   })
 }
 
 function collision (heroObject, obj2) {
-
-  return obj2.x <= (heroObject.x + heroObject.width / 2) &&
-    heroObject.x <= (obj2.x + obj2.sprite.width / 2) &&
-    obj2.y <= (heroObject.y + heroObject.height / 2) &&
-    heroObject.y <= (obj2.y + obj2.sprite.height / 2)
+  return obj2.x <= (heroObject.x + heroObject.width) &&
+    heroObject.x <= (obj2.x + obj2.sprite.width) &&
+    obj2.y <= (heroObject.y + heroObject.height) &&
+    heroObject.y <= (obj2.y + obj2.sprite.height)
 
 }
 
@@ -218,13 +222,13 @@ function render () {
   drawTrees()
   hero.draw()
   seened.forEach(seen => {
-    ctx.drawImage(seen.sprite, seen.x, seen.y)
+    // ctx.drawImage(seen.sprite, seen.x, seen.y)
+    seen.draw()
   })
   showScore('Seeni: ' + collected)
 }
 
 function showScore (txt) {
-  // Score
   ctx.fillStyle = 'rgb(30, 10, 0)'
   ctx.font = '14px Arial'
   ctx.textAlign = 'left'
@@ -232,19 +236,15 @@ function showScore (txt) {
   ctx.strokeText(txt, treeImageWidth, treeImageWidth) //text, x,y
 }
 
-let reset = function (seen) {
-  //Put hero to the center
-  // hero.x = canvasWidth / 2
-  // hero.y = canvasHeight / 2
-
-  // Throw the mushroom somewhere on the screen randomly
+let resetMushroom = function (seen) {
   let mushroomsOnScreen = 0
 
+  // Throw the mushroom somewhere on the screen randomly
   if (seen) {
     do {
       seen.x = seen.sprite.width + (Math.random() * (canvasWidth - 2 * seen.sprite.width))
       seen.y = seen.sprite.height + (Math.random() * (canvasHeight - 2 * seen.sprite.height))
-    } while (collision(hero, seen) && mushroomsOnScreen <= seenedMax)
+    } while (collision(hero, seen) && mushroomsOnScreen <= MUSHROOMS_MAX)
   }
 }
 
