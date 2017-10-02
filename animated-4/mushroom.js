@@ -4,7 +4,7 @@ class Mushroom {
     this.sprite = sprite
     this.size = sprite.width //maksimaalne suurus, milleni kasvab
     this.suurus = 0  //pole veel hakanud kasvama
-    this.vanus = 1 //pole veel maa peal
+    this.vanus = 0 //pole veel maa peal
     this.speed = 0.05  //kui palju igas kaadris suureneb
     this.iga = 500 //frames!
     this.vana = false  //kui vanaks saab, siis kaob!
@@ -20,13 +20,12 @@ class Mushroom {
       if (this.suurus < this.size) {
         this.suurus += this.speed
         ctx.drawImage(this.sprite, this.x, this.y, this.suurus, this.suurus)
-        // this.vanus++
+        this.vanus++
       }
       else {
         if (this.vanus < this.iga) {
           ctx.drawImage(this.sprite, this.x, this.y)
-          // TODO: Uncomment
-          //this.vanus++
+          this.vanus++
         }
         else {
           this.vana = true

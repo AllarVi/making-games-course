@@ -14,10 +14,18 @@ class AnimatedCharacter {
     this.x = Math.floor(canvasHeight / 2)
     this.state = state
     this.face_direction = 'front'
+    this.poisoned = false
+    this.pikali = 0
+    this.healing = 200
   }
 
   contextDrawImage (sx, sy) {
     ctx.drawImage(this.image, sx, sy, this.sx, this.sy, this.x, this.y, this.sx, this.sy)
+  }
+
+  setPosition (x, y) {
+    this.x = x
+    this.y = y
   }
 
   draw () {
