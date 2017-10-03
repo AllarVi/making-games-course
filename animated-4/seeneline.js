@@ -39,13 +39,14 @@ function loadImages (sources, callback) {
   }
 }
 
-let seeni = 10  //kui palju on tarvis korjata
+let mushroomsToCollect = 10  //kui palju on tarvis korjata
 let canvasWidth, canvasHeight, treeImageWidth, treeImageHeight, verticalTrees, horizontalTrees, ctx,
   treeImage, hero, collected, then
 let startTime = Date.now() //seente korjamise aja leidmiseks
 
 const MUSHROOMS_MAX = 5
-let seened = []
+let mushrooms = []
+let mushroomsOnScreen = 0
 
 const OBSTACLES_MAX = 50
 let obstacles = []
@@ -81,7 +82,7 @@ let generateMushrooms = function (images) {
 
     mushroom = new Mushroom(sprite, x, y, good)
 
-    seened.push(mushroom)
+    mushrooms.push(mushroom)
   }
 }
 
@@ -143,59 +144,67 @@ function drawTrees () {
 
 // Update game objects
 function update (modifier) {
-  if (keys.W in keysDown) {
-    if (hero.y > 0) {
-      hero.y -= hero.speed * modifier
-      hero.face_direction = 'back'
-      hero.state = hero.face_direction + hero_mvmt.WALKING
+  if (!hero.poisoned) {
+    if (keys.W in keysDown) {
+      if (hero.y > 0) {
+        hero.y -= hero.speed * modifier
+        hero.face_direction = 'back'
+        hero.state = hero.face_direction + hero_mvmt.WALKING
+      }
+      if (hero.y < treeImageHeight) //can not go through trees!
+      {
+        hero.y = treeImageHeight
+        hero.state = 'front_still'
+      }
     }
-    if (hero.y < treeImageHeight) //can not go through trees!
-    {
-      hero.y = treeImageHeight
-      hero.state = 'front_still'
+    if (keys.S in keysDown) {
+      if (hero.y < canvasHeight - treeImageHeight - hero.height) {
+        hero.y += hero.speed * modifier
+        hero.face_direction = 'front'
+        hero.state = hero.face_direction + hero_mvmt.WALKING
+      }
+      if (hero.y > canvasHeight - treeImageHeight - hero.height) {
+        hero.y = canvasHeight - treeImageHeight - hero.height
+        hero.state = 'front_still'
+      }
     }
-  }
-  if (keys.S in keysDown) {
-    if (hero.y < canvasHeight - treeImageHeight - hero.height) {
-      hero.y += hero.speed * modifier
-      hero.face_direction = 'front'
-      hero.state = hero.face_direction + hero_mvmt.WALKING
+    if (keys.A in keysDown) {
+      if (hero.x > 0) {
+        hero.x -= hero.speed * modifier
+        hero.face_direction = 'left'
+        hero.state = hero.face_direction + hero_mvmt.WALKING
+      }
+      if (hero.x < treeImageWidth) {
+        hero.x = treeImageWidth
+        hero.state = 'left_still'
+      }
     }
-    if (hero.y > canvasHeight - treeImageHeight - hero.height) {
-      hero.y = canvasHeight - treeImageHeight - hero.height
-      hero.state = 'front_still'
+    if (keys.D in keysDown) {
+      if (hero.x < canvasWidth - treeImageHeight - hero.width) {
+        hero.x += hero.speed * modifier
+        hero.face_direction = 'right'
+        hero.state = hero.face_direction + hero_mvmt.WALKING
+      }
+      if (hero.x > canvasWidth - treeImageHeight - hero.width) {
+        hero.x = canvasWidth - treeImageHeight - hero.width
+        hero.state = 'front_still'
+      }
     }
-  }
-  if (keys.A in keysDown) {
-    if (hero.x > 0) {
-      hero.x -= hero.speed * modifier
-      hero.face_direction = 'left'
-      hero.state = hero.face_direction + hero_mvmt.WALKING
-    }
-    if (hero.x < treeImageWidth) {
-      hero.x = treeImageWidth
-      hero.state = 'left_still'
-    }
-  }
-  if (keys.D in keysDown) {
-    if (hero.x < canvasWidth - treeImageHeight - hero.width) {
-      hero.x += hero.speed * modifier
-      hero.face_direction = 'right'
-      hero.state = hero.face_direction + hero_mvmt.WALKING
-    }
-    if (hero.x > canvasWidth - treeImageHeight - hero.width) {
-      hero.x = canvasWidth - treeImageHeight - hero.width
-      hero.state = 'front_still'
-    }
+  } else {
+    hero.state = 'left' + '_still'
   }
 
   if (!(keys.S in keysDown) && !(keys.A in keysDown) && !(keys.D in keysDown) && !(keys.W in keysDown))
     hero.state = hero.face_direction + '_still'
 
   // Mushroom collision
-  seened.forEach(seen => {
+  mushrooms.forEach(seen => {
     if (collision(hero, seen)) {
       ++collected
+      if (!seen.good) {
+        hero.poisoned = true
+        hero.pikali = 1
+      }
       resetMushroom(seen)
     }
   })
@@ -203,7 +212,15 @@ function update (modifier) {
   // Obstacle collision
   obstacles.forEach(tree => {
     if (collision(hero, tree)) {
-      console.log('Obstacle collision')
+      if (hero.face_direction === 'left') {
+        hero.x += hero.speed * modifier
+      } else if (hero.face_direction === 'right') {
+        hero.x -= hero.speed * modifier
+      } else if (hero.face_direction === 'front') {
+        hero.y -= hero.speed * modifier
+      } else if (hero.face_direction === 'back') {
+        hero.y += hero.speed * modifier
+      }
     }
   })
 }
@@ -220,11 +237,31 @@ function collision (heroObject, obj2) {
 function render () {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight)
   drawTrees()
-  hero.draw()
-  seened.forEach(seen => {
-    // ctx.drawImage(seen.sprite, seen.x, seen.y)
-    seen.draw()
-  })
+  if (!hero.poisoned) {
+    hero.draw()
+  }
+  else {
+    hero.pikali += 1
+    if (hero.pikali < hero.healing) {  //hero on pikali
+      let x0 = hero.x
+      let y0 = hero.y
+      ctx.translate(x0, y0)
+      ctx.rotate(Math.PI / 2)
+      hero.setPosition(0, 0)
+      hero.draw()
+      ctx.rotate(-Math.PI / 2)
+      ctx.translate(-x0, -y0)
+      hero.setPosition(x0, y0)
+    }
+    else {
+      hero.poisoned = false
+    }
+  }
+  drawMushrooms()
+  // seened.forEach(seen => {
+  //   // ctx.drawImage(seen.sprite, seen.x, seen.y)
+  //   seen.draw()
+  // })
   showScore('Seeni: ' + collected)
 }
 
@@ -236,6 +273,31 @@ function showScore (txt) {
   ctx.strokeText(txt, treeImageWidth, treeImageWidth) //text, x,y
 }
 
+function drawMushrooms () {
+  let i
+
+  console.log('MushroomsOnScreen ', mushroomsOnScreen)
+  if ((mushroomsOnScreen < mushroomsToCollect) && (Math.random() < 0.01)) {
+    i = Math.floor(Math.random() * mushrooms.length)
+    if (mushrooms[i].vanus > 0) {
+      // Seen juba kasvab
+    } else {
+      mushrooms[i].vanus = 1
+
+      mushroomsOnScreen = 0
+      mushrooms.forEach(mushroom => {
+        if (mushroom.vanus > 0) {
+          mushroomsOnScreen += 1
+        }
+      })
+    }
+  }
+
+  mushrooms.forEach(mushroom => {
+    mushroom.draw()
+  })
+}
+
 let resetMushroom = function (seen) {
   let mushroomsOnScreen = 0
 
@@ -244,6 +306,7 @@ let resetMushroom = function (seen) {
     do {
       seen.x = seen.sprite.width + (Math.random() * (canvasWidth - 2 * seen.sprite.width))
       seen.y = seen.sprite.height + (Math.random() * (canvasHeight - 2 * seen.sprite.height))
+      seen.suurus = 0
     } while (collision(hero, seen) && mushroomsOnScreen <= MUSHROOMS_MAX)
   }
 }
@@ -252,7 +315,7 @@ let resetMushroom = function (seen) {
 let game = function () {
   let now = Date.now()
   let delta = now - then
-  if (collected < seeni) {
+  if (collected < mushroomsToCollect) {
     update(delta / 100)
     render()
     then = now
