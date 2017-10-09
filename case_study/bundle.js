@@ -7,127 +7,34 @@ var THREE = _interopRequireWildcard(_three);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function update() {
-  /*
-  the angle is incremented by 0.1 every frame, try higher values for a faster animation
-  */
+//THREEJS RELATED VARIABLES
 
-  angle += .1;
-
-  /*
-  Try modifying the angle and/or the radius for a different movement
-  */
-
-  cube.position.x = cos(angle) * radius;
-  cube.position.y = sin(angle) * radius;
-
-  var newAngle = angle * 0.5;
-  cube2.position.x = cos(newAngle * 4) * sin(newAngle) * radius;
-  cube2.position.y = sin(newAngle * 4) * sin(newAngle) * radius;
-
-  var newAngle2 = angle * 0.5;
-  cube3.position.x = cos(newAngle2) * radius * 2;
-  cube3.position.y = sin(newAngle * 2) * radius * 2;
-
-  var newAngle3 = angle * 0.2;
-  realCube.position.x = cos(newAngle3) * sin(newAngle3 * 2) * radius * 6;
-  realCube.position.y = sin(newAngle3) * sin(newAngle3 * 2) * radius * 4;
-
-  /*
-  You may want to use the same principle on the rotation property of an object, uncomment the next line to see what happens
-  */
-
-  cube.rotation.z = cos(angle) * PI / 4;
-
-  /*
-  Or act on the scale, note that 1 is added as an offset to avoid a negative scale value.
-  */
-
-  //cube.scale.y = 1 + cos(angle) * .5;
-
-  /*
-  Your turn, you may want to:
-  - comment or uncomment the lines above to try new combinations,
-  - replace cos by sin and vice versa,
-  - replace radius with an other cyclic function
-  example :
-  cube.position.x = cos(angle) * (sin(angle) *radius);
-  ...
-   */
-}
-
-/*-------------------------------------------
-The code below initializes the needed variables
-and A Threejs scene. Though setting up a threejs scene is out of the scope of this article I added a few comments to understand what's happening there.
--------------------------------------------*/
-
-// initializing variables :
 var scene = void 0,
     camera = void 0,
-    renderer = void 0,
-    WIDTH = void 0,
-    HEIGHT = void 0;
+    fieldOfView = void 0,
+    aspectRatio = void 0,
+    nearPlane = void 0,
+    farPlane = void 0,
+    shadowLight = void 0,
+    renderer = void 0;
+
+var globalLight = void 0;
+
+var HEIGHT = void 0;
+var WIDTH = void 0;
+var windowHalfX = void 0;
+var windowHalfY = void 0;
+
+var step = 0;
+
+// OTHER VARIABLES
+
 var PI = Math.PI;
-var angle = 0;
-var radius = 10;
-var cube = void 0;
-var cube2 = void 0;
-var cube3 = void 0;
-var realCube = void 0;
 var hero = void 0;
-var cos = Math.cos;
-var sin = Math.sin;
+var clock = void 0;
+var container = void 0;
 
-function init(event) {
-  // get the container that will hold the animation
-  var container = document.getElementById('world');
-  // get window size
-  HEIGHT = window.innerHeight;
-  WIDTH = window.innerWidth;
-  // create a threejs Scene, set up the camera and the renderer
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(50, WIDTH / HEIGHT, 1, 2000);
-  camera.position.z = 100;
-  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(WIDTH, HEIGHT);
-  renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
-  container.appendChild(renderer.domElement);
-  // create the cubecube
-  var geom = new THREE.CubeGeometry(32, 4, 8, 1);
-  var geom2 = new THREE.CubeGeometry(64, 2, 8, 1);
-  var geom3 = new THREE.CubeGeometry(4, 16, 8, 1);
-  var geomRealCube = new THREE.CubeGeometry(8, 8, 8, 1);
-  var material = new THREE.MeshStandardMaterial({
-    color: 0x401A07
-  });
-
-  var materialPink = new THREE.MeshStandardMaterial({
-    color: '#EED2EE'
-  });
-
-  var materialRed = new THREE.MeshStandardMaterial({
-    color: 'red'
-  });
-
-  cube = new THREE.Mesh(geom, material);
-  cube2 = new THREE.Mesh(geom2, material);
-  cube3 = new THREE.Mesh(geom3, materialPink);
-  realCube = new THREE.Mesh(geomRealCube, materialRed);
-  // add the cube to the scene
-  scene.add(cube);
-  scene.add(cube2);
-  scene.add(cube3);
-  scene.add(realCube);
-
-  createHero();
-  // create and add a light source
-  var globalLight = new THREE.AmbientLight(0xffffff, 1);
-  scene.add(globalLight);
-  // listen to the window resize
-  window.addEventListener('resize', handleWindowResize, false);
-  // start a loop that will render the animation in each frame
-  loop();
-}
+//let gui = new dat.GUI();
 
 // MATERIALS
 
@@ -138,59 +45,82 @@ var brownMat = new THREE.MeshStandardMaterial({
   roughness: 1
 });
 
-var blackMat = new THREE.MeshPhongMaterial({
-  color: 0x100707,
-  shading: THREE.FlatShading
-});
-
-var redMat = new THREE.MeshPhongMaterial({
-  color: 0xAA5757,
-  shading: THREE.FlatShading
-});
-
 var blueMat = new THREE.MeshPhongMaterial({
   color: 0x5b9696,
   shading: THREE.FlatShading
 });
 
-var whiteMat = new THREE.MeshPhongMaterial({
-  color: 0xffffff,
-  shading: THREE.FlatShading
-});
+//INIT THREE JS, SCREEN AND MOUSE EVENTS
 
-var currentMaterial = new THREE.MeshPhongMaterial({
-  color: 0xff0000,
-  shading: THREE.FlatShading
-});
+function initScreenAnd3D() {
+  container = document.getElementById('world');
+  HEIGHT = container.offsetHeight;
+  WIDTH = container.width;
+  windowHalfX = WIDTH / 2;
+  windowHalfY = HEIGHT / 2;
+
+  scene = new THREE.Scene();
+
+  scene.fog = new THREE.Fog(0xd6eae6, 150, 300);
+
+  aspectRatio = WIDTH / HEIGHT;
+  fieldOfView = 50;
+  nearPlane = 1;
+  farPlane = 2000;
+  camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
+  camera.position.x = 0;
+  camera.position.z = 100;
+  camera.position.y = 0;
+  //camera.lookAt(new THREE.Vector3(0, 30, 0));
+
+  renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    antialias: true
+  });
+  renderer.setSize(WIDTH, HEIGHT);
+  renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
+  renderer.shadowMap.enabled = true;
+
+  container.appendChild(renderer.domElement);
+
+  window.addEventListener('resize', handleWindowResize, false);
+
+  clock = new THREE.Clock();
+  handleWindowResize();
+}
 
 function handleWindowResize() {
-  // If the window is resized, we have to update the camera aspect ratio
-  HEIGHT = window.innerHeight;
-  WIDTH = window.innerWidth;
+  HEIGHT = container.offsetHeight;
+  WIDTH = container.offsetWidth;
+  windowHalfX = WIDTH / 2;
+  windowHalfY = HEIGHT / 2;
   renderer.setSize(WIDTH, HEIGHT);
   camera.aspect = WIDTH / HEIGHT;
   camera.updateProjectionMatrix();
 }
 
-function loop() {
-  // call the update function in each frame to update the cube position
-  update();
-  // render the scene in each frame
-  renderer.render(scene, camera);
-  // call the loop function in next frame
-  requestAnimationFrame(loop);
+function createLights() {
+  globalLight = new THREE.AmbientLight(0xffffff, 1);
+  shadowLight = new THREE.DirectionalLight(0xffffff, 1);
+  shadowLight.position.set(10, 8, 8);
+  shadowLight.castShadow = true;
+  shadowLight.shadow.camera.left = -40;
+  shadowLight.shadow.camera.right = 40;
+  shadowLight.shadow.camera.top = 40;
+  shadowLight.shadow.camera.bottom = -40;
+  shadowLight.shadow.camera.near = 1;
+  shadowLight.shadow.camera.far = 1000;
+  shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 2048;
+  scene.add(globalLight);
+  scene.add(shadowLight);
 }
 
 var Hero = function Hero() {
-  // This will be incremented later at each frame and will be used as the rotation angle of the cycle.
   this.runningCycle = 0;
-
-  // Create a mesh that will hold the body.
   this.mesh = new THREE.Group();
   this.body = new THREE.Group();
   this.mesh.add(this.body);
 
-  // Create the different parts and add them to the body.
   var torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1); //
   this.torso = new THREE.Mesh(torsoGeom, blueMat);
   this.torso.position.y = 8;
@@ -227,7 +157,6 @@ var Hero = function Hero() {
   this.legL.castShadow = true;
   this.body.add(this.legL);
 
-  // Ensure that every part of the body casts and receives shadows.
   this.body.traverse(function (object) {
     if (object instanceof THREE.Mesh) {
       object.castShadow = true;
@@ -236,12 +165,121 @@ var Hero = function Hero() {
   });
 };
 
+Hero.prototype.run = function () {
+  var s = .2;
+  var t = this.runningCycle;
+
+  if (step > 8) t *= 2;
+  t = t % (2 * PI);
+
+  var amp = 4;
+
+  this.runningCycle += s;
+  this.legR.position.x = Math.cos(t) * amp;
+  this.legR.position.y = -Math.sin(t) * amp;
+  this.legL.position.x = Math.cos(t + PI) * amp;
+  this.legL.position.y = -Math.sin(t + PI) * amp;
+  this.legL.position.y = Math.max(0, this.legL.position.y);
+  this.legR.position.y = Math.max(0, this.legR.position.y);
+  this.torso.position.y = 8 - Math.cos(t * 2) * amp * .2;
+  this.head.position.y = 21 - Math.cos(t * 2) * amp * .3;
+  this.torso.rotation.y = -Math.cos(t + PI) * amp * .05;
+  this.handR.position.x = -Math.cos(t) * amp;
+  this.handR.rotation.z = -Math.cos(t) * PI / 8;
+  this.handL.position.x = -Math.cos(t + PI) * amp;
+  this.handL.rotation.z = -Math.cos(t + PI) * PI / 8;
+  this.head.rotation.x = Math.cos(t) * amp * .02;
+  this.head.rotation.y = Math.cos(t) * amp * .01;
+  if (t > PI) {
+    this.legR.rotation.z = Math.cos(t * 2 + PI / 2) * PI / 4;
+    this.legL.rotation.z = 0;
+  } else {
+    this.legR.rotation.z = 0;
+    this.legL.rotation.z = Math.cos(t * 2 + PI / 2) * PI / 4;
+  }
+};
+
 function createHero() {
   hero = new Hero();
+  hero.mesh.position.y = -15;
   scene.add(hero.mesh);
 }
-// initialize the demo when the page is loaded
+
+var rot = -1;
+
+function loop() {
+
+  updateTrigoCircle(hero.runningCycle);
+  hero.run();
+  rot += .01;
+  hero.mesh.rotation.y = -PI / 4 + Math.sin(rot * PI / 8);
+  render();
+  requestAnimationFrame(loop);
+}
+
+function render() {
+  renderer.render(scene, camera);
+}
+
 window.addEventListener('load', init, false);
+
+function init() {
+  initScreenAnd3D();
+  createLights();
+  createHero();
+  loop();
+}
+
+// Trigo Circle
+var trigoArc = document.getElementById('trigoArc');
+var trigoLine = document.getElementById('trigoLine');
+var trigoPoint = document.getElementById('trigoPoint');
+var cosPoint = document.getElementById('cosPoint');
+var sinPoint = document.getElementById('sinPoint');
+var cosLine = document.getElementById('cosLine');
+var sinLine = document.getElementById('sinLine');
+var projSinLine = document.getElementById('projSinLine');
+var projCosLine = document.getElementById('projCosLine');
+
+var tp = {
+  radiusArc: 10,
+  centerX: 60,
+  centerY: 60,
+  radiusLines: 50
+};
+
+function updateTrigoCircle(angle) {
+  angle %= PI * 2;
+  var cos = Math.cos(angle);
+  var sin = Math.sin(angle);
+  var start = {
+    x: tp.centerX + tp.radiusArc * cos,
+    y: tp.centerY + tp.radiusArc * sin
+  };
+  var end = {
+    x: tp.centerX + tp.radiusArc,
+    y: tp.centerY
+  };
+
+  var arcSweep = angle >= PI ? 1 : 0;
+  var d = ['M', tp.centerX, tp.centerY, 'L', start.x, start.y, 'A', tp.radiusArc, tp.radiusArc, 0, arcSweep, 0, end.x, end.y, 'L', tp.centerX, tp.centerY].join(' ');
+
+  trigoArc.setAttribute('d', d);
+  trigoLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines);
+  trigoLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines);
+  trigoPoint.setAttribute('cx', tp.centerX + cos * tp.radiusLines);
+  trigoPoint.setAttribute('cy', tp.centerY + sin * tp.radiusLines);
+  cosPoint.setAttribute('cx', tp.centerX + cos * tp.radiusLines);
+  sinPoint.setAttribute('cy', tp.centerY + sin * tp.radiusLines);
+  cosLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines);
+  sinLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines);
+  projSinLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines);
+  projSinLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines);
+  projSinLine.setAttribute('y1', tp.centerY + sin * tp.radiusLines);
+  projCosLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines);
+  projCosLine.setAttribute('x1', tp.centerX + cos * tp.radiusLines);
+  projCosLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines);
+}
 
 },{"three":2}],2:[function(require,module,exports){
 (function (global, factory) {
