@@ -1,0 +1,477 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    /*background-image:url(images/computers_taust219.jpg); */
+    font-size: 12px;
+    font-style: normal;
+    margin-left: 2em;
+    margin-right: 2em;
+    padding-bottom: 1em;
+    margin-top: 2px;
+    margin_bottom: 2px;
+    /*	text-indent: 0.8em;*/
+    /*border: 1px; */
+}
+
+#sisu {
+    /*min-height:100%; */
+    position: relative;
+}
+
+.taandeta {
+    text-indent: 0px;
+    padding-left: 1em;
+    display: block;
+    margin-bottom: 1em;
+}
+
+.taandega {
+    text-indent: 10em;
+    padding-left: 1em;
+    display: block;
+    border-left: 1px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.tekstikast_paremal {
+    text-align: right;
+    float: right;
+    font-style: italic;
+    border-left-color: #D5DBF0;
+    border-left-width: 1px;
+    padding-bottom: 20px;
+    padding-left: 5px;
+}
+
+.tekstikast_paremal300 {
+    text-align: right;
+    float: right;
+    width: 300px;
+/ / font-style: italic;
+    border-left-color: #D5DBF0;
+    border-left-width: 1px;
+    padding-bottom: 20px;
+    padding-left: 5px;
+}
+
+.andmed {
+    font-family: "Courier New", Courier, monospace;
+    text-indent: 0px;
+    padding-left: 20px;
+    font-size: 9pt;
+}
+
+p {
+    margin-top: 5px;
+    margin-bottom: 4px;
+}
+
+.pealkiri {
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 6px;
+    color: #141C2B;
+    font-weight: lighter;
+    font-size: 20px;
+    border-bottom-style: solid;
+    font-variant: small-caps;
+    font: TrajanPro-regular;
+    border-bottom-width: thin;
+    /*width: 300px;*/
+    /*text-decoration: underline; */
+}
+
+.pealkiri:first-letter {
+    font-size: 24px;
+}
+
+.alapealkiri {
+    font-weight: bold;
+    padding-left: 0em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: #F0F8FF;
+    border-top: 1px dotted #A18400;
+    border-bottom: 1px dotted #A18400;
+    /*width: 220px;*/
+    /**/
+    margin-bottom: 2em;
+    /*font-variant: small-caps; */
+}
+
+.ala-alapealkiri {
+    padding-left: 4em;
+    padding-left: 2em;
+    padding-top: 4px;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    border-top: 1px dotted #A18400;
+    border-bottom: 1px dotted #A18400;
+    background-color: #F0F8FF;
+    width: 220px;
+    font-weight: 900;
+}
+
+.ala-ala-alapealkiri {
+    font-size: 12px;
+    font-weight: bolder;
+    margin-top: 12px;
+    margin-bottom: 10px;
+}
+
+h4 {
+    font-size: 24px;
+    display: block;
+    margin-top: -10px;
+    text-align: left;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    /*padding-left : 1em;*/
+}
+
+h2 {
+    font-size: 16px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    text-decoration: underline;
+}
+
+h3 {
+    font-size: 12px;
+    font-weight: bolder;
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+
+.naide_real {
+    font-family: "Courier New", Courier, mono;
+    font-size: 12px;
+    color: #000033;
+    text-indent: 0px;
+}
+
+.naide {
+    font-family: "Courier New", Courier, mono;
+    font-size: 12px;
+    clip: rect();
+    color: #000033;
+    margin-left: 10mm;
+    text-indent: 0px;
+}
+
+.mitteterminal {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.alumine {
+    display: block;
+    position: absolute;
+    bottom: -1413px;
+    width: 100%;
+    height: 60px;
+    left: 5px;
+
+}
+
+.terminal {
+    font-family: "Times New Roman", Times, serif;
+    font-style: normal;
+    font-weight: normal;
+    color: #0000CC;
+}
+
+.grammatika {
+    font-family: "Courier New", Courier, mono;
+}
+
+.punane {
+    /*display: block;
+    clear: both;
+    margin-left : 20px;
+    margin-top : 4px;
+    font-size : 10pt;*/
+    color: Red;
+}
+
+.reegel {
+    display: "block";
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    padding-left: 1em;
+    font-weight: bold
+}
+
+.programm {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11pt;
+    color: Black;
+    padding-left: 2em;
+    padding-top: 0em;
+    text-indent: 0em;
+    text-align: left;
+    display: compact;
+}
+
+.math {
+    color: Black;
+    padding-left: 2em;
+    text-indent: 0px;
+    text-align: left;
+    display: compact;
+    font-style: italic;
+}
+
+.programm_compact {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11pt;
+    color: Black;
+    padding-left: 4em;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    top: 12px;
+    bottom: 12px;
+/ / left: 32 px;
+    text-indent: 0em;
+    text-align: left;
+    display: compact;
+    width: 70%;
+}
+
+.programm_format {
+    font-family: "Courier New", Courier, monospace;
+    /*font-size : 12pt; */
+    color: Black;
+}
+
+.math_format {
+    color: Black;
+    font-style: italic;
+}
+
+.chapter_intro {
+    font-style: italic;
+    margin-bottom: 10em;
+    margin-top: -2px;
+}
+
+.comment {
+    display: inline;
+    font-family: "MS Sans Serif, Geneva, sans-serif";
+    font-style: italic;
+    color: #ff008B;
+    margin-bottom: 10em;
+}
+
+.pilt_paremal {
+    float: right;
+/ / margin-top: 2 px;
+    margin-left: 6px;
+    margin-bottom: 4px;
+    margin-right: 2px;
+    border-style: none;
+    vertical-align: text-top;
+    color: #0000FF;
+    text-decoration: none;
+    text-align: center;
+}
+
+.pilt_paremal_rel {
+    position: relative;
+    top: auto;
+    float: right;
+/ / right: auto;
+    margin-top: 10px;
+/ / margin-left: 6 px;
+    margin-bottom: 4px;
+    margin-right: 60px;
+    border-style: none;
+    vertical-align: text-top;
+/ / color: #0000FF;
+    text-decoration: none;
+    text-align: center;
+}
+
+.pilt_vasakul {
+    float: left;
+
+    margin-top: 2px;
+    margin-right: 10px;
+    padding-right: 6px;
+    margin-bottom: 4px;
+/ / margin-left: 10 px;
+    border-style: none;
+    top: 0px;
+    vertical-align: text-top;
+    color: #0000FF;
+    text-decoration: underline;
+/ / font-weight: bolder;
+    text-align: center;
+}
+
+.pilt_real {
+    vertical-align: middle;
+}
+
+.pilt_keskel {
+    vertical-align: middle;
+}
+
+.canvas {
+    width: 100%;
+/ / height: 100 %;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.tekst {
+    display: block;
+    clear: both;
+    margin-left: 20px;
+    margin-top: 4px;
+    font-size: 10pt;
+    color: #000066;
+}
+
+.logo {
+    margin-left: 1em;
+    font-weight: bold;
+    text-indent: 0px;
+
+}
+
+.allakriipsutatud {
+    text-decoration: underline;
+}
+
+.lisad {
+    font-size: 9px;
+}
+
+.contact A {
+    border: none
+}
+
+.tabelipأ¤is {
+    font-style: normal;
+    font-size: 10px;
+    background: #EFF1F1;
+}
+
+.arvustus {
+    font-size: 9px;
+}
+
+table {
+    font-size: 9pt;
+}
+
+.pildiallkiri {
+    text-align: center;
+}
+
+tr {
+    background-color: #ffffff
+}
+
+.initial {
+    background-color: #DDDDDD;
+    color: #000000
+}
+
+.normal {
+    background-color: #ffffff
+}
+
+.highlight {
+    background-color: #F2E1F2;
+}
+
+/* @group Blink */
+
+.blink {
+    -webkit-animation: blink .75s linear infinite;
+    -moz-animation: blink .75s linear infinite;
+    -ms-animation: blink .75s linear infinite;
+    -o-animation: blink .75s linear infinite;
+    animation: blink .75s linear infinite;
+}
+
+@-webkit-keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    50.01% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    50.01% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    50.01% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-o-keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    50.01% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    50.01% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}

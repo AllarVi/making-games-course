@@ -1,7 +1,7 @@
 {
   "name": "idx5060",
   "version": "1.0.0",
-  "description": "",
+  "description": "IDX5060",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -17,6 +17,12 @@
   },
   "homepage": "https://github.com/AllarVi/making-games-course#readme",
   "devDependencies": {
-    "jest": "^21.1.0"
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "jest": "^21.1.0",
+    "ramda": "^0.24.1"
+  },
+  "dependencies": {
+    "three": "^0.87.1"
   }
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link href="../super_mario/mangud.css" rel="stylesheet" type="text/css">
+    <style type="text/css" media="screen">
+        body {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        #taustcanvas {
+            position: absolute;
+            display: block;
+            margin: 1em auto;
+            background: url("images/taust.png");
+            background-position: -100px 0px;
+            background-repeat: repeat-x;
+        }
+
+        #gamecanvas {
+            position: absolute;
+            display: block;
+            margin: 1em auto;
+            z-index: 10;
+        }
+    </style>
+    <title>Hüppav Mario !</title>
+    <script type="text/javascript" src="js/mario_jump_ob.js"></script>
+    <audio id='music' src="sounds/mario_game.mp3" loop></audio>
+    <audio id='coin' src="sounds/coin7.mp3"></audio>
+    <audio id='robot' src="sounds/robot.mp3" loop></audio>
+
+</head>
+<body>
+
+<div style="text-align: center;">
+    <canvas id="taustcanvas" width="800" height="500"></canvas>
+    <br>
+    <canvas id="gamecanvas" width="800" height="500" tabindex=0></canvas>
+</div>
+</body>
+</html>
