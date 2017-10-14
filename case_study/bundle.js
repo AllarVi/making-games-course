@@ -1,11 +1,134 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _three = require('three');
 
 var THREE = _interopRequireWildcard(_three);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Hero = function () {
+  function Hero() {
+    _classCallCheck(this, Hero);
+
+    this.runningCycle = 0;
+    this.mesh = new THREE.Group();
+    this.body = new THREE.Group();
+    this.mesh.add(this.body);
+
+    var torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1); //
+    this.torso = new THREE.Mesh(torsoGeom, blueMat);
+    this.torso.position.y = 8;
+    this.torso.castShadow = true;
+    this.body.add(this.torso);
+
+    var handGeom = new THREE.CubeGeometry(3, 3, 3, 1);
+    this.handR = new THREE.Mesh(handGeom, brownMat);
+    this.handR.position.z = 7;
+    this.handR.position.y = 8;
+    this.body.add(this.handR);
+
+    this.handL = this.handR.clone();
+    this.handL.position.z = -this.handR.position.z;
+    this.body.add(this.handL);
+
+    var headGeom = new THREE.CubeGeometry(16, 16, 16, 1); //
+    this.head = new THREE.Mesh(headGeom, blueMat);
+    this.head.position.y = 21;
+    this.head.castShadow = true;
+    this.body.add(this.head);
+
+    var legGeom = new THREE.CubeGeometry(8, 3, 5, 1);
+
+    this.legR = new THREE.Mesh(legGeom, brownMat);
+    this.legR.position.x = 0;
+    this.legR.position.z = 7;
+    this.legR.position.y = 0;
+    this.legR.castShadow = true;
+    this.body.add(this.legR);
+
+    this.legL = this.legR.clone();
+    this.legL.position.z = -this.legR.position.z;
+    this.legL.castShadow = true;
+    this.body.add(this.legL);
+
+    this.body.traverse(function (object) {
+      if (object instanceof THREE.Mesh) {
+        object.castShadow = true;
+        object.receiveShadow = true;
+      }
+    });
+  }
+
+  _createClass(Hero, [{
+    key: 'run',
+    value: function run() {
+      var s = .2;
+      var t = this.runningCycle;
+
+      t = t % (2 * Math.PI);
+
+      var amp = 4;
+
+      this.runningCycle += s;
+      this.legR.position.x = Math.cos(t) * amp;
+      this.legR.position.y = -Math.sin(t) * amp;
+      this.legL.position.x = Math.cos(t + Math.PI) * amp;
+      this.legL.position.y = -Math.sin(t + Math.PI) * amp;
+      this.legL.position.y = Math.max(0, this.legL.position.y);
+      this.legR.position.y = Math.max(0, this.legR.position.y);
+      this.torso.position.y = 8 - Math.cos(t * 2) * amp * .2;
+      this.head.position.y = 21 - Math.cos(t * 2) * amp * .3;
+      this.torso.rotation.y = -Math.cos(t + Math.PI) * amp * .05;
+      this.handR.position.x = -Math.cos(t) * amp;
+      this.handR.rotation.z = -Math.cos(t) * Math.PI / 8;
+      this.handL.position.x = -Math.cos(t + Math.PI) * amp;
+      this.handL.rotation.z = -Math.cos(t + Math.PI) * Math.PI / 8;
+      this.head.rotation.x = Math.cos(t) * amp * .02;
+      this.head.rotation.y = Math.cos(t) * amp * .01;
+      if (t > Math.PI) {
+        this.legR.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4;
+        this.legL.rotation.z = 0;
+      } else {
+        this.legR.rotation.z = 0;
+        this.legL.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4;
+      }
+    }
+  }]);
+
+  return Hero;
+}();
+
+// MATERIALS
+
+var brownMat = new THREE.MeshStandardMaterial({
+  color: 0x401A07,
+  side: THREE.DoubleSide,
+  shading: THREE.SmoothShading,
+  roughness: 1
+});
+
+var blueMat = new THREE.MeshPhongMaterial({
+  color: 0x5b9696,
+  shading: THREE.FlatShading
+});
+
+module.exports = Hero;
+
+},{"three":3}],2:[function(require,module,exports){
+'use strict';
+
+var _three = require('three');
+
+var THREE = _interopRequireWildcard(_three);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var Hero = require('./hero.js');
 
 //THREEJS RELATED VARIABLES
 
@@ -25,30 +148,12 @@ var WIDTH = void 0;
 var windowHalfX = void 0;
 var windowHalfY = void 0;
 
-var step = 0;
-
 // OTHER VARIABLES
 
 var PI = Math.PI;
 var hero = void 0;
 var clock = void 0;
 var container = void 0;
-
-//let gui = new dat.GUI();
-
-// MATERIALS
-
-var brownMat = new THREE.MeshStandardMaterial({
-  color: 0x401A07,
-  side: THREE.DoubleSide,
-  shading: THREE.SmoothShading,
-  roughness: 1
-});
-
-var blueMat = new THREE.MeshPhongMaterial({
-  color: 0x5b9696,
-  shading: THREE.FlatShading
-});
 
 //INIT THREE JS, SCREEN AND MOUSE EVENTS
 
@@ -114,90 +219,6 @@ function createLights() {
   scene.add(globalLight);
   scene.add(shadowLight);
 }
-
-var Hero = function Hero() {
-  this.runningCycle = 0;
-  this.mesh = new THREE.Group();
-  this.body = new THREE.Group();
-  this.mesh.add(this.body);
-
-  var torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1); //
-  this.torso = new THREE.Mesh(torsoGeom, blueMat);
-  this.torso.position.y = 8;
-  this.torso.castShadow = true;
-  this.body.add(this.torso);
-
-  var handGeom = new THREE.CubeGeometry(3, 3, 3, 1);
-  this.handR = new THREE.Mesh(handGeom, brownMat);
-  this.handR.position.z = 7;
-  this.handR.position.y = 8;
-  this.body.add(this.handR);
-
-  this.handL = this.handR.clone();
-  this.handL.position.z = -this.handR.position.z;
-  this.body.add(this.handL);
-
-  var headGeom = new THREE.CubeGeometry(16, 16, 16, 1); //
-  this.head = new THREE.Mesh(headGeom, blueMat);
-  this.head.position.y = 21;
-  this.head.castShadow = true;
-  this.body.add(this.head);
-
-  var legGeom = new THREE.CubeGeometry(8, 3, 5, 1);
-
-  this.legR = new THREE.Mesh(legGeom, brownMat);
-  this.legR.position.x = 0;
-  this.legR.position.z = 7;
-  this.legR.position.y = 0;
-  this.legR.castShadow = true;
-  this.body.add(this.legR);
-
-  this.legL = this.legR.clone();
-  this.legL.position.z = -this.legR.position.z;
-  this.legL.castShadow = true;
-  this.body.add(this.legL);
-
-  this.body.traverse(function (object) {
-    if (object instanceof THREE.Mesh) {
-      object.castShadow = true;
-      object.receiveShadow = true;
-    }
-  });
-};
-
-Hero.prototype.run = function () {
-  var s = .2;
-  var t = this.runningCycle;
-
-  if (step > 8) t *= 2;
-  t = t % (2 * PI);
-
-  var amp = 4;
-
-  this.runningCycle += s;
-  this.legR.position.x = Math.cos(t) * amp;
-  this.legR.position.y = -Math.sin(t) * amp;
-  this.legL.position.x = Math.cos(t + PI) * amp;
-  this.legL.position.y = -Math.sin(t + PI) * amp;
-  this.legL.position.y = Math.max(0, this.legL.position.y);
-  this.legR.position.y = Math.max(0, this.legR.position.y);
-  this.torso.position.y = 8 - Math.cos(t * 2) * amp * .2;
-  this.head.position.y = 21 - Math.cos(t * 2) * amp * .3;
-  this.torso.rotation.y = -Math.cos(t + PI) * amp * .05;
-  this.handR.position.x = -Math.cos(t) * amp;
-  this.handR.rotation.z = -Math.cos(t) * PI / 8;
-  this.handL.position.x = -Math.cos(t + PI) * amp;
-  this.handL.rotation.z = -Math.cos(t + PI) * PI / 8;
-  this.head.rotation.x = Math.cos(t) * amp * .02;
-  this.head.rotation.y = Math.cos(t) * amp * .01;
-  if (t > PI) {
-    this.legR.rotation.z = Math.cos(t * 2 + PI / 2) * PI / 4;
-    this.legL.rotation.z = 0;
-  } else {
-    this.legR.rotation.z = 0;
-    this.legL.rotation.z = Math.cos(t * 2 + PI / 2) * PI / 4;
-  }
-};
 
 function createHero() {
   hero = new Hero();
@@ -281,7 +302,7 @@ function updateTrigoCircle(angle) {
   projCosLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines);
 }
 
-},{"three":2}],2:[function(require,module,exports){
+},{"./hero.js":1,"three":3}],3:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -44522,4 +44543,4 @@ function updateTrigoCircle(angle) {
 
 })));
 
-},{}]},{},[1]);
+},{}]},{},[2]);
