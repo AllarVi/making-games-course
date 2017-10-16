@@ -1,10 +1,16 @@
 import * as THREE from 'three'
-const Hero = require('./hero.js');
+import { FirstPersonControls } from './FirstPersonControls'
+
+const Hero = require('./hero.js')
+const keys = require('./constants.js')
 
 //THREEJS RELATED VARIABLES
 
 let scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, shadowLight,
   renderer
+let controls
+
+let keysDown = {}
 
 let globalLight
 
@@ -34,7 +40,7 @@ function initScreenAnd3D () {
   scene.fog = new THREE.Fog(0xd6eae6, 150, 300)
 
   aspectRatio = WIDTH / HEIGHT
-  fieldOfView = 50
+  fieldOfView = 60
   nearPlane = 1
   farPlane = 2000
   camera = new THREE.PerspectiveCamera(
@@ -44,9 +50,16 @@ function initScreenAnd3D () {
     farPlane
   )
   camera.position.x = 0
-  camera.position.z = 100
-  camera.position.y = 0
-  //camera.lookAt(new THREE.Vector3(0, 30, 0));
+  camera.position.z = 150
+  camera.position.y = 150
+
+  controls = new FirstPersonControls(camera)
+
+  controls.movementSpeed = 10
+  controls.lookSpeed = 0.125
+  controls.lookVertical = true
+  controls.lat = -50
+  controls.lon = 270
 
   renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -72,6 +85,8 @@ function handleWindowResize () {
   renderer.setSize(WIDTH, HEIGHT)
   camera.aspect = WIDTH / HEIGHT
   camera.updateProjectionMatrix()
+
+  controls.handleResize()
 }
 
 function createLights () {
@@ -96,25 +111,58 @@ function createHero () {
   scene.add(hero.mesh)
 }
 
-let rot = -1
+function handleKeyboardEvents () {
+  if (keys.W in keysDown) {
+    hero.mesh.position.z -= 1
+    hero.mesh.rotation.y = PI / 2
+    hero.run()
+  }
+  if (keys.S in keysDown) {
+    hero.mesh.position.z += 1
+    hero.mesh.rotation.y = PI + (PI / 2)
+    hero.run()
+  }
+  if (keys.A in keysDown) {
+    hero.mesh.position.x -= 1
+    hero.mesh.rotation.y = PI
+    hero.run()
+  }
+  if (keys.D in keysDown) {
+    hero.mesh.position.x += 1
+    hero.mesh.rotation.y = 0
+    hero.run()
+  }
+}
 
 function loop () {
 
   updateTrigoCircle(hero.runningCycle)
-  hero.run()
-  rot += .01
-  hero.mesh.rotation.y = -PI / 4 + Math.sin(rot * PI / 8)
+  handleKeyboardEvents()
   render()
   requestAnimationFrame(loop)
 }
 
 function render () {
+  controls.update(clock.getDelta())
   renderer.render(scene, camera)
 }
 
 window.addEventListener('load', init, false)
 
+function initKeyboardEvents () {
+  addEventListener('keydown', function (e) {
+    e.preventDefault()
+    keysDown[e.keyCode] = true
+  }, false)
+
+  addEventListener('keyup', function (e) {
+    e.preventDefault()
+    delete keysDown[e.keyCode]
+  }, false)
+}
+
 function init () {
+  initKeyboardEvents()
   initScreenAnd3D()
   createLights()
   createHero()
