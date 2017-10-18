@@ -271,7 +271,6 @@ function FirstPersonControls (object, domElement) {
     if (this.lookVertical) this.lat -= this.mouseY * actualLookSpeed * verticalLookRatio
 
     this.lat = Math.max(-85, Math.min(85, this.lat))
-    console.log('latitude', this.lon)
     this.phi = THREE.Math.degToRad(90 - this.lat)
 
     this.theta = THREE.Math.degToRad(this.lon)

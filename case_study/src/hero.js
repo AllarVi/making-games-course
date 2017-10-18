@@ -53,7 +53,7 @@ class Hero {
   }
 
   run () {
-    let s = .2
+    let s = 0.2
     let t = this.runningCycle
 
     t = t % (2 * Math.PI)
@@ -67,15 +67,15 @@ class Hero {
     this.legL.position.y = -Math.sin(t + Math.PI) * amp
     this.legL.position.y = Math.max(0, this.legL.position.y)
     this.legR.position.y = Math.max(0, this.legR.position.y)
-    this.torso.position.y = 8 - Math.cos(t * 2) * amp * .2
-    this.head.position.y = 21 - Math.cos(t * 2) * amp * .3
-    this.torso.rotation.y = -Math.cos(t + Math.PI) * amp * .05
+    this.torso.position.y = 8 - Math.cos(t * 2) * amp * 0.2
+    this.head.position.y = 21 - Math.cos(t * 2) * amp * 0.3
+    this.torso.rotation.y = -Math.cos(t + Math.PI) * amp * 0.05
     this.handR.position.x = -Math.cos(t) * amp
     this.handR.rotation.z = -Math.cos(t) * Math.PI / 8
     this.handL.position.x = -Math.cos(t + Math.PI) * amp
     this.handL.rotation.z = -Math.cos(t + Math.PI) * Math.PI / 8
-    this.head.rotation.x = Math.cos(t) * amp * .02
-    this.head.rotation.y = Math.cos(t) * amp * .01
+    this.head.rotation.x = Math.cos(t) * amp * 0.02
+    this.head.rotation.y = Math.cos(t) * amp * 0.01
     if (t > Math.PI) {
       this.legR.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4
       this.legL.rotation.z = 0

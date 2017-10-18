@@ -1,4 +1,4 @@
 .idea/
 .idea/misc.xml
 node_modules/
-/case_study/bundle.js
+/case_study/dist/
