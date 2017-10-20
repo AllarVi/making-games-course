@@ -50,8 +50,8 @@ function initScreenAnd3D () {
     farPlane
   )
   camera.position.x = 0
-  camera.position.z = 150
-  camera.position.y = 150
+  camera.position.z = 100
+  camera.position.y = 100
 
   controls = new FirstPersonControls(camera)
 
@@ -136,7 +136,7 @@ function handleKeyboardEvents () {
 
 function loop () {
 
-  updateTrigoCircle(hero.runningCycle)
+  updateTrigoCircle(hero.runningDistance)
   handleKeyboardEvents()
   render()
   requestAnimationFrame(loop)
@@ -147,6 +147,7 @@ function render () {
   renderer.render(scene, camera)
 }
 
+// Entry point
 window.addEventListener('load', init, false)
 
 function initKeyboardEvents () {

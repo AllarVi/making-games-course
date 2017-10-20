@@ -3,12 +3,13 @@ import * as THREE from 'three'
 class Hero {
 
   constructor () {
-    this.runningCycle = 0
+    this.runningDistance = 0
+
     this.mesh = new THREE.Group()
     this.body = new THREE.Group()
     this.mesh.add(this.body)
 
-    let torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1)//
+    let torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1)
     this.torso = new THREE.Mesh(torsoGeom, blueMat)
     this.torso.position.y = 8
     this.torso.castShadow = true
@@ -53,35 +54,63 @@ class Hero {
   }
 
   run () {
-    let s = 0.2
-    let t = this.runningCycle
+    const s = 0.2
 
-    t = t % (2 * Math.PI)
+    let radians = this.runningDistance
+    radians = radians % (2 * Math.PI)
+    this.runningDistance += s
 
-    let amp = 4
+    const amplitude = 4
+    this._handleRightLegRunAnimation(radians, amplitude)
+    this._handleLeftLegRunAnimation(radians, amplitude)
+    this._handleTorsoRunAnimation(radians, amplitude)
+    this._handleHeadRunAnimation(radians, amplitude)
+    this._handleRightHandRunAnimation(radians, amplitude)
+    this._handleLeftHandRunAnimation(radians, amplitude)
+  }
 
-    this.runningCycle += s
-    this.legR.position.x = Math.cos(t) * amp
-    this.legR.position.y = -Math.sin(t) * amp
-    this.legL.position.x = Math.cos(t + Math.PI) * amp
-    this.legL.position.y = -Math.sin(t + Math.PI) * amp
+  _handleLeftHandRunAnimation (radians, amplitude) {
+    this.handL.position.x = -Math.cos(radians + Math.PI) * amplitude
+    this.handL.rotation.z = -Math.cos(radians + Math.PI) * Math.PI / 8
+  }
+
+  _handleRightHandRunAnimation (radians, amplitude) {
+    this.handR.position.x = -Math.cos(radians) * amplitude
+    this.handR.rotation.z = -Math.cos(radians) * Math.PI / 8
+  }
+
+  _handleHeadRunAnimation (radians, amplitude) {
+    this.head.position.y = 21 - Math.cos(radians * 2) * amplitude * 0.3
+    this.head.rotation.x = Math.cos(radians) * amplitude * 0.02
+    this.head.rotation.y = Math.cos(radians) * amplitude * 0.01
+  }
+
+  _handleTorsoRunAnimation (radians, amplitude) {
+    this.torso.position.y = 8 - Math.cos(radians * 2) * amplitude * 0.2
+    this.torso.rotation.y = -Math.cos(radians + Math.PI) * amplitude * 0.05
+  }
+
+  _handleLeftLegRunAnimation (radians, amplitude) {
+    this.legL.position.x = Math.cos(radians + Math.PI) * amplitude
+    this.legL.position.y = -Math.sin(radians + Math.PI) * amplitude
     this.legL.position.y = Math.max(0, this.legL.position.y)
-    this.legR.position.y = Math.max(0, this.legR.position.y)
-    this.torso.position.y = 8 - Math.cos(t * 2) * amp * 0.2
-    this.head.position.y = 21 - Math.cos(t * 2) * amp * 0.3
-    this.torso.rotation.y = -Math.cos(t + Math.PI) * amp * 0.05
-    this.handR.position.x = -Math.cos(t) * amp
-    this.handR.rotation.z = -Math.cos(t) * Math.PI / 8
-    this.handL.position.x = -Math.cos(t + Math.PI) * amp
-    this.handL.rotation.z = -Math.cos(t + Math.PI) * Math.PI / 8
-    this.head.rotation.x = Math.cos(t) * amp * 0.02
-    this.head.rotation.y = Math.cos(t) * amp * 0.01
-    if (t > Math.PI) {
-      this.legR.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4
+
+    if (radians > Math.PI) {
       this.legL.rotation.z = 0
     } else {
+      this.legL.rotation.z = Math.cos(radians * 2 + Math.PI / 2) * Math.PI / 4
+    }
+  }
+
+  _handleRightLegRunAnimation (radians, amplitude) {
+    this.legR.position.x = Math.cos(radians) * amplitude
+    this.legR.position.y = -Math.sin(radians) * amplitude
+    this.legR.position.y = Math.max(0, this.legR.position.y)
+
+    if (radians > Math.PI) {
+      this.legR.rotation.z = Math.cos(radians * 2 + Math.PI / 2) * Math.PI / 4
+    } else {
       this.legR.rotation.z = 0
-      this.legL.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4
     }
   }
 }
