@@ -193,18 +193,18 @@ function updateTrigoCircle (angle) {
   let sin = Math.sin(angle)
   let start = {
     x: tp.centerX + tp.radiusArc * cos,
-    y: tp.centerY + tp.radiusArc * sin
+    y: tp.centerY + tp.radiusArc * sin,
   }
   let end = {
     x: tp.centerX + tp.radiusArc,
-    y: tp.centerY
+    y: tp.centerY,
   }
 
   let arcSweep = angle >= PI ? 1 : 0
   let d = ['M', tp.centerX, tp.centerY,
     'L', start.x, start.y,
     'A', tp.radiusArc, tp.radiusArc, 0, arcSweep, 0, end.x, end.y,
-    'L', tp.centerX, tp.centerY
+    'L', tp.centerX, tp.centerY,
   ].join(' ')
 
   trigoArc.setAttribute('d', d)

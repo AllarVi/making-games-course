@@ -7,4 +7,9 @@ module.exports = {
       'jsx': true
     }
   },
+  'rules': {
+      'semi': ['off'],
+      'require-jsdoc': ['off'],
+      'no-undef': ['off'],
+  },
 }
