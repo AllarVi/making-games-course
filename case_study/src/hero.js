@@ -4,6 +4,7 @@ class Hero {
 
   constructor () {
     this.runningDistance = 0
+    this.jumpingDistance = 0
 
     this.mesh = new THREE.Group()
     this.body = new THREE.Group()
@@ -69,6 +70,23 @@ class Hero {
     this._handleLeftHandRunAnimation(radians, amplitude)
   }
 
+  jump () {
+    const s = 0.1
+
+    let radians = this.jumpingDistance
+    radians = radians % (2 * Math.PI)
+    this.jumpingDistance += s
+
+    const amplitude = 8
+    this._handleRightLegJumpAnimation(radians, amplitude)
+    this._handleLeftLegJumpAnimation(radians, amplitude)
+    this._handleTorsoJumpAnimation(radians, amplitude)
+    this._handleHeadJumpAnimation(radians, amplitude)
+    this._handleRightHandJumpAnimation(radians, amplitude)
+    this._handleLeftHandJumpAnimation(radians, amplitude)
+  }
+
+  // Running
   _handleLeftHandRunAnimation (radians, amplitude) {
     this.handL.position.x = -Math.cos(radians + Math.PI) * amplitude
     this.handL.rotation.z = -Math.cos(radians + Math.PI) * Math.PI / 8
@@ -105,6 +123,74 @@ class Hero {
   _handleRightLegRunAnimation (radians, amplitude) {
     this.legR.position.x = Math.cos(radians) * amplitude
     this.legR.position.y = -Math.sin(radians) * amplitude
+    this.legR.position.y = Math.max(0, this.legR.position.y)
+
+    if (radians > Math.PI) {
+      this.legR.rotation.z = Math.cos(radians * 2 + Math.PI / 2) * Math.PI / 4
+    } else {
+      this.legR.rotation.z = 0
+    }
+  }
+
+  // Jumping
+
+  _handleLeftHandJumpAnimation (radians, amplitude) {
+    this.handL.position.x = 0
+
+    this.handL.position.y = -Math.sin(radians) * amplitude * 4
+    this.handL.position.y = Math.max(8, this.handL.position.y)
+
+    // this.handL.rotation.z = -Math.cos(radians) * Math.PI / 8
+    // this.handL.rotation.z = Math.max(0, this.handL.rotation.z)
+  }
+
+  _handleRightHandJumpAnimation (radians, amplitude) {
+    this.handR.position.x = 0
+
+    this.handR.position.y = -Math.sin(radians) * amplitude * 4
+    this.handR.position.y = Math.max(8, this.handR.position.y)
+
+    // this.handR.rotation.z = -Math.cos(radians) * Math.PI / 8
+    // this.handR.rotation.z = Math.max(0, this.handR.rotation.z)
+  }
+
+  _handleHeadJumpAnimation (radians, amplitude) {
+    this.head.position.x = 0
+
+    this.head.position.y = -Math.sin(radians) * amplitude * 6
+    this.head.position.y = Math.max(21, this.head.position.y)
+
+    // this.head.rotation.z = -Math.cos(radians + (Math.PI / 2)) * amplitude * 0.02
+    // this.head.rotation.z = Math.max(0, this.head.rotation.z)
+  }
+
+  _handleTorsoJumpAnimation (radians, amplitude) {
+    this.torso.position.x = 0
+
+    this.torso.position.y = -Math.sin(radians) * amplitude * 4
+    this.torso.position.y = Math.max(8, this.torso.position.y)
+
+    // this.torso.rotation.z = -Math.cos(radians + (Math.PI / 2)) * amplitude * 0.05
+    // this.torso.rotation.z = Math.max(0, this.torso.rotation.z)
+  }
+
+  _handleLeftLegJumpAnimation (radians, amplitude) {
+    this.legL.position.x = 0
+
+    this.legL.position.y = -Math.sin(radians) * amplitude * 2
+    this.legL.position.y = Math.max(0, this.legR.position.y)
+
+    if (radians > Math.PI) {
+      this.legL.rotation.z = Math.cos(radians * 2 + Math.PI / 2) * Math.PI / 4
+    } else {
+      this.legL.rotation.z = 0
+    }
+  }
+
+  _handleRightLegJumpAnimation (radians, amplitude) {
+    this.legR.position.x = 0
+
+    this.legR.position.y = -Math.sin(radians) * amplitude * 2
     this.legR.position.y = Math.max(0, this.legR.position.y)
 
     if (radians > Math.PI) {
