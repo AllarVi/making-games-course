@@ -229,8 +229,8 @@ function FirstPersonControls (object, domElement) {
 
     if (this.heightSpeed) {
 
-      var y = THREE.Math.clamp(this.object.position.y, this.heightMin, this.heightMax)
-      var heightDelta = y - this.heightMin
+      let y = THREE.Math.clamp(this.object.position.y, this.heightMin, this.heightMax)
+      let heightDelta = y - this.heightMin
 
       this.autoSpeedFactor = delta * ( heightDelta * this.heightCoef )
 
@@ -240,7 +240,7 @@ function FirstPersonControls (object, domElement) {
 
     }
 
-    var actualMoveSpeed = delta * this.movementSpeed
+    let actualMoveSpeed = delta * this.movementSpeed
 
     if (this.moveForward || ( this.autoForward && !this.moveBackward )) this.object.translateZ(-( actualMoveSpeed + this.autoSpeedFactor ))
     if (this.moveBackward) this.object.translateZ(actualMoveSpeed)
@@ -251,7 +251,7 @@ function FirstPersonControls (object, domElement) {
     if (this.moveUp) this.object.translateY(actualMoveSpeed)
     if (this.moveDown) this.object.translateY(-actualMoveSpeed)
 
-    var actualLookSpeed = delta * this.lookSpeed
+    let actualLookSpeed = delta * this.lookSpeed
 
     if (!this.activeLook) {
 
@@ -259,7 +259,7 @@ function FirstPersonControls (object, domElement) {
 
     }
 
-    var verticalLookRatio = 1
+    let verticalLookRatio = 1
 
     if (this.constrainVertical) {
 
@@ -281,7 +281,7 @@ function FirstPersonControls (object, domElement) {
 
     }
 
-    var targetPosition = this.target,
+    let targetPosition = this.target,
       position = this.object.position
 
     targetPosition.x = position.x + 100 * Math.sin(this.phi) * Math.cos(this.theta)
@@ -310,11 +310,11 @@ function FirstPersonControls (object, domElement) {
 
   }
 
-  var _onMouseMove = bind(this, this.onMouseMove)
-  var _onMouseDown = bind(this, this.onMouseDown)
-  var _onMouseUp = bind(this, this.onMouseUp)
-  var _onKeyDown = bind(this, this.onKeyDown)
-  var _onKeyUp = bind(this, this.onKeyUp)
+  let _onMouseMove = bind(this, this.onMouseMove)
+  let _onMouseDown = bind(this, this.onMouseDown)
+  let _onMouseUp = bind(this, this.onMouseUp)
+  let _onKeyDown = bind(this, this.onKeyDown)
+  let _onKeyUp = bind(this, this.onKeyUp)
 
   this.domElement.addEventListener('contextmenu', contextmenu, false)
   this.domElement.addEventListener('mousemove', _onMouseMove, false)
