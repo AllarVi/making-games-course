@@ -8,7 +8,7 @@ const keys = require('./constants.js')
 
 let scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, shadowLight,
   renderer
-let controls
+let firstPersonControls
 
 let keysDown = {}
 
@@ -51,15 +51,17 @@ function initScreenAnd3D () {
   )
   camera.position.x = 0
   camera.position.z = 100
-  camera.position.y = 100
+  camera.position.y = 20
 
-  controls = new FirstPersonControls(camera)
+  firstPersonControls = new FirstPersonControls(camera)
 
-  controls.movementSpeed = 10
-  controls.lookSpeed = 0.125
-  controls.lookVertical = true
-  controls.lat = -50
-  controls.lon = 270
+  firstPersonControls.movementSpeed = 10
+  firstPersonControls.lookSpeed = 0.125
+  firstPersonControls.lookVertical = true
+  // firstPersonControls.lat = -50
+  firstPersonControls.lat = 0
+  // firstPersonControls.lon = 270
+  firstPersonControls.lon = 270
 
   renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -86,7 +88,7 @@ function handleWindowResize () {
   camera.aspect = WIDTH / HEIGHT
   camera.updateProjectionMatrix()
 
-  controls.handleResize()
+  firstPersonControls.handleResize()
 }
 
 function createLights () {
@@ -112,6 +114,11 @@ function createHero () {
 }
 
 function handleKeyboardEvents () {
+
+  if (keysDown.anyKeyDown) {
+    requestAnimationFrame(render)
+  }
+
   if (keys.W in keysDown) {
     hero.mesh.position.z -= 1
     hero.mesh.rotation.y = PI / 2
@@ -132,18 +139,21 @@ function handleKeyboardEvents () {
     hero.mesh.rotation.y = 0
     hero.run()
   }
+
+  if (keys.SPACE in keysDown) {
+    hero.jump()
+  }
 }
 
-function loop () {
+function animate () {
 
   updateTrigoCircle(hero.runningDistance)
   handleKeyboardEvents()
-  render()
-  requestAnimationFrame(loop)
+  firstPersonControls.update(clock.getDelta())
+  requestAnimationFrame(animate)
 }
 
 function render () {
-  controls.update(clock.getDelta())
   renderer.render(scene, camera)
 }
 
@@ -154,11 +164,17 @@ function initKeyboardEvents () {
   addEventListener('keydown', function (e) {
     e.preventDefault()
     keysDown[e.keyCode] = true
+    keysDown.anyKeyDown = true
   }, false)
 
   addEventListener('keyup', function (e) {
     e.preventDefault()
     delete keysDown[e.keyCode]
+
+    // Stop animation if only "anyKeyDown" is left
+    if (Object.keys(keysDown).length < 2) {
+      keysDown.anyKeyDown = false
+    }
   }, false)
 }
 
@@ -167,7 +183,8 @@ function init () {
   initScreenAnd3D()
   createLights()
   createHero()
-  loop()
+  animate()
+  render()
 }
 
 // Trigo Circle
