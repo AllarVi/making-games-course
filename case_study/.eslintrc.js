@@ -1,15 +1,17 @@
 module.exports = {
-  'extends': ['eslint:recommended', 'google'],
-  'parserOptions': {
-    'ecmaVersion': 6,
-    'sourceType': 'module',
-    'ecmaFeatures': {
-      'jsx': true
-    }
-  },
-  'rules': {
-      'semi': ['off'],
-      'require-jsdoc': ['off'],
-      'no-undef': ['off'],
-  },
+	'extends': 'airbnb-base',
+	'parserOptions': {
+		'ecmaVersion': 2017,
+		'sourceType': 'module',
+		'ecmaFeatures': {
+			'jsx': true,
+		},
+	},
+	'rules': {
+		'semi': ['off'],
+		'require-jsdoc': ['off'],
+		'no-undef': ['off'],
+		'indent': ['error', 'tab', {'SwitchCase': 1}],
+		'no-tabs': 0,
+	},
 }
