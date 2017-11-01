@@ -14,3 +14,8 @@ npm install -g yo generator-jest
 ```
 yo jest:test path/to/file-to-test.js
 ```
+
+## eslint
+```
+eslint src/main.js --fix-dry-run
+```

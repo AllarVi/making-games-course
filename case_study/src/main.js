@@ -3,42 +3,36 @@ import { FirstPersonControls } from './FirstPersonControls.js'
 import Keyboard from './Keyboard.js'
 import Hero from './Hero.js'
 import { keys } from './constants.js'
+import TrigoCircle from './TrigoCircle.js'
 
 let keyboard
 
 //THREEJS RELATED VARIABLES
 
-let scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, shadowLight,
-  renderer
+let scene
+let camera
+let fieldOfView
+let aspectRatio
+let nearPlane
+let farPlane
+let shadowLight
+let renderer
 let firstPersonControls
 
 let globalLight
 
 let HEIGHT
 let WIDTH
-let windowHalfX
-let windowHalfY
 
 // OTHER VARIABLES
 
-const PI = Math.PI
 let hero
 let clock
 let container
 
 //INIT THREE JS, SCREEN AND MOUSE EVENTS
 
-function initScreenAnd3D () {
-  container = document.getElementById('world')
-  HEIGHT = container.offsetHeight
-  WIDTH = container.width
-  windowHalfX = WIDTH / 2
-  windowHalfY = HEIGHT / 2
-
-  scene = new THREE.Scene()
-
-  scene.fog = new THREE.Fog(0xd6eae6, 150, 300)
-
+let initCamera = function () {
   aspectRatio = WIDTH / HEIGHT
   fieldOfView = 60
   nearPlane = 1
@@ -52,7 +46,9 @@ function initScreenAnd3D () {
   camera.position.x = 0
   camera.position.z = 100
   camera.position.y = 20
+}
 
+let initFirstPersonControls = function () {
   firstPersonControls = new FirstPersonControls(camera)
 
   firstPersonControls.movementSpeed = 10
@@ -62,7 +58,9 @@ function initScreenAnd3D () {
   firstPersonControls.lat = 0
   // firstPersonControls.lon = 270
   firstPersonControls.lon = 270
+}
 
+let initRenderer = function () {
   renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true
@@ -72,18 +70,33 @@ function initScreenAnd3D () {
   renderer.shadowMap.enabled = true
 
   container.appendChild(renderer.domElement)
+}
+
+let initScene = function () {
+  scene = new THREE.Scene()
+  scene.fog = new THREE.Fog(0xd6eae6, 150, 300)
+}
+
+function initScreenAnd3D () {
+  container = document.getElementById('world')
+  HEIGHT = container.offsetHeight
+  WIDTH = container.width
+
+  initScene()
+  initCamera()
+  initFirstPersonControls()
+  initRenderer()
 
   window.addEventListener('resize', handleWindowResize, false)
 
   clock = new THREE.Clock()
+
   handleWindowResize()
 }
 
 function handleWindowResize () {
   HEIGHT = container.offsetHeight
   WIDTH = container.offsetWidth
-  windowHalfX = WIDTH / 2
-  windowHalfY = HEIGHT / 2
   renderer.setSize(WIDTH, HEIGHT)
   camera.aspect = WIDTH / HEIGHT
   camera.updateProjectionMatrix()
@@ -115,11 +128,12 @@ function createHero () {
 
 function animate () {
 
-  updateTrigoCircle(hero.runningDistance)
+  TrigoCircle.updateTrigoCircle(hero.runningDistance)
 
   if (keyboard.keysDown.anyKeyDown) {
     requestAnimationFrame(render)
   }
+
   keyboard.handleKeyboardEvents(hero, keys)
   firstPersonControls.update(clock.getDelta())
   requestAnimationFrame(animate)
@@ -133,6 +147,8 @@ function render () {
 window.addEventListener('load', init, false)
 
 function init () {
+  TrigoCircle.initTrigoCircle()
+
   keyboard = new Keyboard()
   keyboard.initKeyboardEvents()
 
@@ -143,57 +159,3 @@ function init () {
   render()
 }
 
-// Trigo Circle
-let trigoArc = document.getElementById('trigoArc')
-let trigoLine = document.getElementById('trigoLine')
-let trigoPoint = document.getElementById('trigoPoint')
-let cosPoint = document.getElementById('cosPoint')
-let sinPoint = document.getElementById('sinPoint')
-let cosLine = document.getElementById('cosLine')
-let sinLine = document.getElementById('sinLine')
-let projSinLine = document.getElementById('projSinLine')
-let projCosLine = document.getElementById('projCosLine')
-
-let tp = {
-  radiusArc: 10,
-  centerX: 60,
-  centerY: 60,
-  radiusLines: 50,
-}
-
-function updateTrigoCircle (angle) {
-  angle %= PI * 2
-  let cos = Math.cos(angle)
-  let sin = Math.sin(angle)
-  let start = {
-    x: tp.centerX + tp.radiusArc * cos,
-    y: tp.centerY + tp.radiusArc * sin,
-  }
-  let end = {
-    x: tp.centerX + tp.radiusArc,
-    y: tp.centerY,
-  }
-
-  let arcSweep = angle >= PI ? 1 : 0
-  let d = ['M', tp.centerX, tp.centerY,
-    'L', start.x, start.y,
-    'A', tp.radiusArc, tp.radiusArc, 0, arcSweep, 0, end.x, end.y,
-    'L', tp.centerX, tp.centerY,
-  ].join(' ')
-
-  trigoArc.setAttribute('d', d)
-  trigoLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines)
-  trigoLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines)
-  trigoPoint.setAttribute('cx', tp.centerX + cos * tp.radiusLines)
-  trigoPoint.setAttribute('cy', tp.centerY + sin * tp.radiusLines)
-  cosPoint.setAttribute('cx', tp.centerX + cos * tp.radiusLines)
-  sinPoint.setAttribute('cy', tp.centerY + sin * tp.radiusLines)
-  cosLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines)
-  sinLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines)
-  projSinLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines)
-  projSinLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines)
-  projSinLine.setAttribute('y1', tp.centerY + sin * tp.radiusLines)
-  projCosLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines)
-  projCosLine.setAttribute('x1', tp.centerX + cos * tp.radiusLines)
-  projCosLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines)
-}

@@ -160,7 +160,8 @@ export default class Hero {
     this.head.position.y = -Math.sin(radians) * amplitude * 6
     this.head.position.y = Math.max(21, this.head.position.y)
 
-    // this.head.rotation.z = -Math.cos(radians + (Math.PI / 2)) * amplitude * 0.02
+    // this.head.rotation.z = -Math.cos(radians + (Math.PI / 2))
+    // * amplitude * 0.02
     // this.head.rotation.z = Math.max(0, this.head.rotation.z)
   }
 
@@ -170,7 +171,8 @@ export default class Hero {
     this.torso.position.y = -Math.sin(radians) * amplitude * 4
     this.torso.position.y = Math.max(8, this.torso.position.y)
 
-    // this.torso.rotation.z = -Math.cos(radians + (Math.PI / 2)) * amplitude * 0.05
+    // this.torso.rotation.z = -Math.cos(radians + (Math.PI / 2))
+    // * amplitude * 0.05
     // this.torso.rotation.z = Math.max(0, this.torso.rotation.z)
   }
 
