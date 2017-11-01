@@ -13,5 +13,6 @@ module.exports = {
 		'no-undef': ['off'],
 		'indent': ['error', 'tab', {'SwitchCase': 1}],
 		'no-tabs': 0,
+		'no-underscore-dangle': 0,
 	},
 }

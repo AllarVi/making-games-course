@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --coverage",
     "build": "gulp build",
-    "eslint": "eslint src/*.js --fix-dry-run"
+    "eslint": "eslint src/Hero.js --fix-dry-run"
   },
   "author": "",
   "license": "ISC",

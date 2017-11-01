@@ -33,9 +33,9 @@ export default {
 
 	updateTrigoCircle(angle) {
 		angle %= Math.PI * 2
-		let cos = Math.cos(angle)
-		let sin = Math.sin(angle)
-		let start = {
+		const cos = Math.cos(angle)
+		const sin = Math.sin(angle)
+		const start = {
 			x: tp.centerX + tp.radiusArc * cos,
 			y: tp.centerY + tp.radiusArc * sin,
 		}
@@ -52,7 +52,7 @@ export default {
 		].join(' ')
 
 		trigoArc.setAttribute('d', d)
-		trigoLine.setAttribute('x2', tp.centerX + cos * tp.radiusLines)
+		trigoLine.setAttribute('x2', tp.centerX + (cos * tp.radiusLines))
 		trigoLine.setAttribute('y2', tp.centerY + sin * tp.radiusLines)
 		trigoPoint.setAttribute('cx', tp.centerX + cos * tp.radiusLines)
 		trigoPoint.setAttribute('cy', tp.centerY + sin * tp.radiusLines)
