@@ -1,16 +1,16 @@
 import * as THREE from 'three'
-import { FirstPersonControls } from './FirstPersonControls'
+import { FirstPersonControls } from './FirstPersonControls.js'
+import Keyboard from './Keyboard.js'
+import Hero from './Hero.js'
+import { keys } from './constants.js'
 
-const Hero = require('./hero.js')
-const keys = require('./constants.js')
+let keyboard
 
 //THREEJS RELATED VARIABLES
 
 let scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, shadowLight,
   renderer
 let firstPersonControls
-
-let keysDown = {}
 
 let globalLight
 
@@ -21,7 +21,7 @@ let windowHalfY
 
 // OTHER VARIABLES
 
-let PI = Math.PI
+const PI = Math.PI
 let hero
 let clock
 let container
@@ -113,42 +113,14 @@ function createHero () {
   scene.add(hero.mesh)
 }
 
-function handleKeyboardEvents () {
-
-  if (keysDown.anyKeyDown) {
-    requestAnimationFrame(render)
-  }
-
-  if (keys.W in keysDown) {
-    hero.mesh.position.z -= 1
-    hero.mesh.rotation.y = PI / 2
-    hero.run()
-  }
-  if (keys.S in keysDown) {
-    hero.mesh.position.z += 1
-    hero.mesh.rotation.y = PI + (PI / 2)
-    hero.run()
-  }
-  if (keys.A in keysDown) {
-    hero.mesh.position.x -= 1
-    hero.mesh.rotation.y = PI
-    hero.run()
-  }
-  if (keys.D in keysDown) {
-    hero.mesh.position.x += 1
-    hero.mesh.rotation.y = 0
-    hero.run()
-  }
-
-  if (keys.SPACE in keysDown) {
-    hero.jump()
-  }
-}
-
 function animate () {
 
   updateTrigoCircle(hero.runningDistance)
-  handleKeyboardEvents()
+
+  if (keyboard.keysDown.anyKeyDown) {
+    requestAnimationFrame(render)
+  }
+  keyboard.handleKeyboardEvents(hero, keys)
   firstPersonControls.update(clock.getDelta())
   requestAnimationFrame(animate)
 }
@@ -160,26 +132,10 @@ function render () {
 // Entry point
 window.addEventListener('load', init, false)
 
-function initKeyboardEvents () {
-  addEventListener('keydown', function (e) {
-    e.preventDefault()
-    keysDown[e.keyCode] = true
-    keysDown.anyKeyDown = true
-  }, false)
-
-  addEventListener('keyup', function (e) {
-    e.preventDefault()
-    delete keysDown[e.keyCode]
-
-    // Stop animation if only "anyKeyDown" is left
-    if (Object.keys(keysDown).length < 2) {
-      keysDown.anyKeyDown = false
-    }
-  }, false)
-}
-
 function init () {
-  initKeyboardEvents()
+  keyboard = new Keyboard()
+  keyboard.initKeyboardEvents()
+
   initScreenAnd3D()
   createLights()
   createHero()

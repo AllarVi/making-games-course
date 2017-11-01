@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-class Hero {
+export default class Hero {
 
   constructor () {
     this.runningDistance = 0
@@ -214,5 +214,3 @@ let blueMat = new THREE.MeshPhongMaterial({
   color: 0x5b9696,
   shading: THREE.FlatShading,
 })
-
-module.exports = Hero

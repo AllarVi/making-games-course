@@ -1,4 +1,4 @@
-const Hero = require('../hero.js')
+const Hero = require('../Hero.js')
 
 describe('Hero', () => {
   it('should create new Hero with attributes', () => {
