@@ -99,11 +99,22 @@ function animate() {
 	requestAnimationFrame(animate)
 }
 
+function initFloor() {
+	const geometry = new THREE.PlaneGeometry(1000, 1000, 1, 1)
+	const material = new THREE.MeshBasicMaterial({ color: 0xD9EEFC })
+	const floor = new THREE.Mesh(geometry, material)
+	floor.material.side = THREE.DoubleSide
+	floor.rotation.x = Math.PI / 2
+	floor.position.y = -20
+	scene.add(floor)
+}
+
 function init() {
 	TrigoCircle.initTrigoCircle()
 	keyboard = new Keyboard()
 
 	initScreenAnd3D()
+	initFloor()
 	createLights()
 	createHero()
 	animate()
