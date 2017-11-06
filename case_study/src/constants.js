@@ -6,4 +6,9 @@ const KEYS = {
 	SPACE: 32,
 }
 
+export const CAMERA_TYPE = {
+	PERSPECTIVE: 'PERSPECTIVE',
+	ORTHOGRAPHIC: 'ORTHOGRAPHIC',
+}
+
 export default KEYS

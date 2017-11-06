@@ -255,17 +255,13 @@ function FirstPersonControls(object, domElement) {
 		targetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta)
 
 		this.object.lookAt(targetPosition)
-
 	}
 
 	function contextmenu(event) {
-
 		event.preventDefault()
-
 	}
 
-	this.dispose = function () {
-
+	this.dispose = function dispose() {
 		this.domElement.removeEventListener('contextmenu', contextmenu, false)
 		this.domElement.removeEventListener('mousedown', _onMouseDown, false)
 		this.domElement.removeEventListener('mousemove', _onMouseMove, false)

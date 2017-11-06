@@ -1,62 +1,30 @@
 import * as THREE from 'three'
-import { FirstPersonControls } from './FirstPersonControls'
 import Keyboard from './Keyboard'
 import Hero from './Hero'
-import KEYS from './constants'
+import KEYS, { CAMERA_TYPE } from './constants'
 import TrigoCircle from './TrigoCircle'
+import cameraFactory from './CameraFactory'
 
 let keyboard
-
-// THREEJS RELATED VARIABLES
 
 let scene
 let camera
 let shadowLight
 let renderer
-let firstPersonControls
 
 let globalLight
 
 let HEIGHT
 let WIDTH
 
-// OTHER VARIABLES
-
 let hero
-let clock
 let container
 
-// INIT THREE JS, SCREEN AND MOUSE EVENTS
-
-function initCamera() {
-	const aspectRatio = WIDTH / HEIGHT
-	const fieldOfView = 60
-	const nearPlane = 1
-	const farPlane = 2000
-	camera = new THREE.PerspectiveCamera(
-		fieldOfView,
-		aspectRatio,
-		nearPlane,
-		farPlane,
-	)
-	camera.position.x = 0
-	camera.position.z = 100
-	camera.position.y = 20
-}
-
-function initFirstPersonControls() {
-	firstPersonControls = new FirstPersonControls(camera)
-
-	firstPersonControls.movementSpeed = 10
-	firstPersonControls.lookSpeed = 0.125
-	firstPersonControls.lookVertical = true
-	// firstPersonControls.lat = -50
-	firstPersonControls.lat = 0
-	// firstPersonControls.lon = 270
-	firstPersonControls.lon = 270
-}
-
 function initRenderer() {
+	container = document.getElementById('world')
+	HEIGHT = container.offsetHeight
+	WIDTH = container.width
+
 	renderer = new THREE.WebGLRenderer({
 		alpha: true,
 		antialias: true,
@@ -70,7 +38,7 @@ function initRenderer() {
 
 function initScene() {
 	scene = new THREE.Scene()
-	scene.fog = new THREE.Fog(0xd6eae6, 150, 300)
+	// scene.fog = new THREE.Fog(0xd6eae6, 150, 300)
 }
 
 function handleWindowResize() {
@@ -79,24 +47,15 @@ function handleWindowResize() {
 	renderer.setSize(WIDTH, HEIGHT)
 	camera.aspect = WIDTH / HEIGHT
 	camera.updateProjectionMatrix()
-
-	firstPersonControls.handleResize()
+	camera.handleResize()
 }
 
 function initScreenAnd3D() {
-	container = document.getElementById('world')
-	HEIGHT = container.offsetHeight
-	WIDTH = container.width
-
 	initScene()
-	initCamera()
-	initFirstPersonControls()
+	camera = cameraFactory(CAMERA_TYPE.ORTHOGRAPHIC)
 	initRenderer()
 
 	window.addEventListener('resize', handleWindowResize, false)
-
-	clock = new THREE.Clock()
-
 	handleWindowResize()
 }
 
@@ -135,15 +94,14 @@ function animate() {
 	}
 
 	keyboard.handleKeyboardEvents(hero, KEYS)
-	firstPersonControls.update(clock.getDelta())
+
+	camera.update()
 	requestAnimationFrame(animate)
 }
 
 function init() {
 	TrigoCircle.initTrigoCircle()
-
 	keyboard = new Keyboard()
-	keyboard.initKeyboardEvents()
 
 	initScreenAnd3D()
 	createLights()
@@ -154,4 +112,3 @@ function init() {
 
 // Entry point
 window.addEventListener('load', init, false)
-
