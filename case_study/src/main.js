@@ -4,32 +4,25 @@ import Hero from './Hero'
 import KEYS, { CAMERA_TYPE } from './constants'
 import TrigoCircle from './TrigoCircle'
 import cameraFactory from './CameraFactory'
+import ShadowLight from './ShadowLight'
 
 let keyboard
 
 let scene
 let camera
-let shadowLight
 let renderer
-
-let globalLight
-
-let HEIGHT
-let WIDTH
 
 let hero
 let container
 
 function initRenderer() {
 	container = document.getElementById('world')
-	HEIGHT = container.offsetHeight
-	WIDTH = container.width
 
 	renderer = new THREE.WebGLRenderer({
 		alpha: true,
 		antialias: true,
 	})
-	renderer.setSize(WIDTH, HEIGHT)
+	renderer.setSize(container.width, container.offsetHeight)
 	renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1)
 	renderer.shadowMap.enabled = true
 
@@ -42,10 +35,11 @@ function initScene() {
 }
 
 function handleWindowResize() {
-	HEIGHT = container.offsetHeight
-	WIDTH = container.offsetWidth
-	renderer.setSize(WIDTH, HEIGHT)
-	camera.aspect = WIDTH / HEIGHT
+	const containerOffsetHeight = container.offsetHeight
+	const containerOffsetWidth = container.offsetWidth
+
+	renderer.setSize(containerOffsetWidth, containerOffsetHeight)
+	camera.aspect = containerOffsetWidth / containerOffsetHeight
 	camera.updateProjectionMatrix()
 	camera.handleResize()
 }
@@ -60,18 +54,9 @@ function initScreenAnd3D() {
 }
 
 function createLights() {
-	globalLight = new THREE.AmbientLight(0xffffff, 1)
-	shadowLight = new THREE.DirectionalLight(0xffffff, 1)
-	shadowLight.position.set(10, 8, 8)
-	shadowLight.castShadow = true
-	shadowLight.shadow.camera.left = -40
-	shadowLight.shadow.camera.right = 40
-	shadowLight.shadow.camera.top = 40
-	shadowLight.shadow.camera.bottom = -40
-	shadowLight.shadow.camera.near = 1
-	shadowLight.shadow.camera.far = 1000
-	shadowLight.shadow.mapSize.height = 2048
-	shadowLight.shadow.mapSize.width = 2048
+	const globalLight = new THREE.AmbientLight(0xffffff, 1)
+	const shadowLight = new ShadowLight()
+
 	scene.add(globalLight)
 	scene.add(shadowLight)
 }
