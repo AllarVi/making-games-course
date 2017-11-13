@@ -1,6 +1,5 @@
 import * as THREE from 'three'
-
-// MATERIALS
+import { MATERIAL_COLORS as MATERIALS_COLORS } from './constants'
 
 const brownMat = new THREE.MeshStandardMaterial({
 	color: 0x401A07,
@@ -14,8 +13,13 @@ const blueMat = new THREE.MeshPhongMaterial({
 	shading: THREE.FlatShading,
 })
 
+const redMat = new THREE.MeshPhongMaterial({
+	color: 0xf44250,
+	shading: THREE.FlatShading,
+})
+
 export default class Hero {
-	constructor() {
+	constructor(materialColor) {
 		this.runningDistance = 0
 		this.jumpingDistance = 0
 
@@ -23,8 +27,15 @@ export default class Hero {
 		this.body = new THREE.Group()
 		this.mesh.add(this.body)
 
+		let mainMaterial
+		if (materialColor === MATERIALS_COLORS.RED) {
+			mainMaterial = redMat
+		} else if (materialColor === MATERIALS_COLORS.BLUE) {
+			mainMaterial = blueMat
+		}
+
 		const torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1)
-		this.torso = new THREE.Mesh(torsoGeom, blueMat)
+		this.torso = new THREE.Mesh(torsoGeom, mainMaterial)
 		this.torso.position.y = 8
 		this.torso.castShadow = true
 		this.body.add(this.torso)
@@ -40,7 +51,7 @@ export default class Hero {
 		this.body.add(this.handL)
 
 		const headGeom = new THREE.CubeGeometry(16, 16, 16, 1)//
-		this.head = new THREE.Mesh(headGeom, blueMat)
+		this.head = new THREE.Mesh(headGeom, mainMaterial)
 		this.head.position.y = 21
 		this.head.castShadow = true
 		this.body.add(this.head)
@@ -65,6 +76,9 @@ export default class Hero {
 				object.receiveShadow = true
 			}
 		})
+
+		this.elapsed = 0
+		this.activityIndex = 0
 	}
 
 	run() {
@@ -217,6 +231,38 @@ export default class Hero {
 		} else {
 			this.legR.rotation.z = 0
 		}
+	}
+
+	activityManager(script) {
+		if (script[this.index]) {
+			this.play(script[this.index])
+		}
+	}
+
+	play(activity) {
+		this.elapsed += 0.2
+
+		const action = activity.activity
+		action.call(this)
+
+		if (this.elapsed > activity.time) {
+			this.elapsed = 0
+			this.activityIndex++
+		}
+	}
+
+	moveDown() {
+		this.run()
+
+		this.mesh.position.z += 0.5
+		this.mesh.rotation.y = Math.PI / 2
+	}
+
+	moveRight() {
+		this.run()
+
+		this.mesh.position.x += 0.5
+		this.mesh.rotation.y = 0
 	}
 }
 

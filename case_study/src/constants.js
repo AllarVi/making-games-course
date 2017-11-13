@@ -11,4 +11,10 @@ export const CAMERA_TYPE = {
 	ORTHOGRAPHIC: 'ORTHOGRAPHIC',
 }
 
+export const MATERIAL_COLORS = {
+	BLUE: 'BLUE',
+	BROWN: 'BROWN',
+	RED: 'RED',
+}
+
 export default KEYS

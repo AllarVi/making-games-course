@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Keyboard from './Keyboard'
 import Hero from './Hero'
-import KEYS, { CAMERA_TYPE } from './constants'
+import KEYS, { CAMERA_TYPE, MATERIAL_COLORS } from './constants'
 import TrigoCircle from './TrigoCircle'
 import cameraFactory from './CameraFactory'
 import ShadowLight from './ShadowLight'
@@ -13,6 +13,7 @@ let camera
 let renderer
 
 let hero
+let villain
 let container
 
 function initRenderer() {
@@ -62,26 +63,44 @@ function createLights() {
 }
 
 function createHero() {
-	hero = new Hero()
+	hero = new Hero(MATERIAL_COLORS.BLUE)
 	hero.mesh.position.y = -15
 	scene.add(hero.mesh)
+}
+
+function createVillain() {
+	villain = new Hero(MATERIAL_COLORS.RED)
+	villain.mesh.position.y = -15
+	villain.mesh.position.x = -150
+	villain.mesh.position.z = -250
+	scene.add(villain.mesh)
 }
 
 function render() {
 	renderer.render(scene, camera)
 }
 
+function villainScript() {
+	const script = [
+		{ activity: villain.moveDown, time: 50 },
+		{ activity: villain.moveRight, time: 100 },
+		{ activity: villain.moveDown, time: 50 },
+	]
+
+	villain.activityManager(script)
+}
+
 function animate() {
+	requestAnimationFrame(animate)
+
 	TrigoCircle.updateTrigoCircle(hero.runningDistance)
 
-	if (keyboard.keysDown.anyKeyDown) {
-		requestAnimationFrame(render)
-	}
+	villainScript()
 
 	keyboard.handleKeyboardEvents(hero, KEYS)
 
 	camera.update()
-	requestAnimationFrame(animate)
+	render()
 }
 
 function initFloor() {
@@ -102,6 +121,7 @@ function init() {
 	initFloor()
 	createLights()
 	createHero()
+	createVillain()
 	animate()
 	render()
 }
