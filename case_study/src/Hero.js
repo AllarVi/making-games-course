@@ -234,8 +234,8 @@ export default class Hero {
 	}
 
 	activityManager(script) {
-		if (script[this.index]) {
-			this.play(script[this.index])
+		if (script[this.activityIndex]) {
+			this.play(script[this.activityIndex])
 		}
 	}
 
