@@ -1,22 +1,5 @@
 import * as THREE from 'three'
-import { MATERIAL_COLORS as MATERIALS_COLORS } from './constants'
-
-const brownMat = new THREE.MeshStandardMaterial({
-	color: 0x401A07,
-	side: THREE.DoubleSide,
-	shading: THREE.SmoothShading,
-	roughness: 1,
-})
-
-const blueMat = new THREE.MeshPhongMaterial({
-	color: 0x5b9696,
-	shading: THREE.FlatShading,
-})
-
-const redMat = new THREE.MeshPhongMaterial({
-	color: 0xf44250,
-	shading: THREE.FlatShading,
-})
+import { blueMat, brownMat, MATERIAL_COLORS as MATERIALS_COLORS, redMat } from './constants'
 
 export default class Hero {
 	constructor(materialColor) {
@@ -38,12 +21,15 @@ export default class Hero {
 		this.torso = new THREE.Mesh(torsoGeom, mainMaterial)
 		this.torso.position.y = 8
 		this.torso.castShadow = true
+		this.torso.receiveShadow = true
 		this.body.add(this.torso)
 
 		const handGeom = new THREE.CubeGeometry(3, 3, 3, 1)
 		this.handR = new THREE.Mesh(handGeom, brownMat)
 		this.handR.position.z = 7
 		this.handR.position.y = 8
+		this.handR.castShadow = true
+		this.handR.receiveShadow = true
 		this.body.add(this.handR)
 
 		this.handL = this.handR.clone()
@@ -54,6 +40,7 @@ export default class Hero {
 		this.head = new THREE.Mesh(headGeom, mainMaterial)
 		this.head.position.y = 21
 		this.head.castShadow = true
+		this.head.receiveShadow = true
 		this.body.add(this.head)
 
 		const legGeom = new THREE.CubeGeometry(8, 3, 5, 1)
@@ -63,19 +50,14 @@ export default class Hero {
 		this.legR.position.z = 7
 		this.legR.position.y = 0
 		this.legR.castShadow = true
+		this.legR.receiveShadow = true
 		this.body.add(this.legR)
 
 		this.legL = this.legR.clone()
 		this.legL.position.z = -this.legR.position.z
 		this.legL.castShadow = true
+		this.legL.receiveShadow = true
 		this.body.add(this.legL)
-
-		this.body.traverse((object) => {
-			if (object instanceof THREE.Mesh) {
-				object.castShadow = true
-				object.receiveShadow = true
-			}
-		})
 	}
 
 	run() {

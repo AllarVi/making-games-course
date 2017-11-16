@@ -41,11 +41,9 @@ b.on('update', bundle) // on any dep update, runs the bundler
 b.on('log', gutil.log) // output build logs to terminal
 b.transform('babelify', { presets: ['es2015'] })
 
-gulp.task('hint', () => {
-	return gulp.src('src/*.js')
-		.pipe(jshint())
-		.pipe(jshint.reporter('default'))
-})
+gulp.task('hint', () => gulp.src('src/*.js')
+	.pipe(jshint())
+	.pipe(jshint.reporter('default')))
 
 // Static server
 gulp.task('browser-sync', () => {

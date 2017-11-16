@@ -16,10 +16,9 @@ export default class ActivityManager {
 
 		if (this.elapsed > activity.time) {
 			this.elapsed = 0
-			this.activityIndex++
+			this.activityIndex += 1
 		}
 
 		this.elapsed += 0.2
 	}
-
 }
