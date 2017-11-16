@@ -76,9 +76,6 @@ export default class Hero {
 				object.receiveShadow = true
 			}
 		})
-
-		this.elapsed = 0
-		this.activityIndex = 0
 	}
 
 	run() {
@@ -230,24 +227,6 @@ export default class Hero {
 				(Math.PI / 4)
 		} else {
 			this.legR.rotation.z = 0
-		}
-	}
-
-	activityManager(script) {
-		if (script[this.activityIndex]) {
-			this.play(script[this.activityIndex])
-		}
-	}
-
-	play(activity) {
-		this.elapsed += 0.2
-
-		const action = activity.activity
-		action.call(this)
-
-		if (this.elapsed > activity.time) {
-			this.elapsed = 0
-			this.activityIndex++
 		}
 	}
 

@@ -5,6 +5,7 @@ import KEYS, { CAMERA_TYPE, MATERIAL_COLORS } from './constants'
 import TrigoCircle from './TrigoCircle'
 import cameraFactory from './CameraFactory'
 import ShadowLight from './ShadowLight'
+import ActivityManager from './ActivityManager'
 
 let keyboard
 
@@ -14,6 +15,8 @@ let renderer
 
 let hero
 let villain
+let villainActivityManager
+
 let container
 
 function initRenderer() {
@@ -74,6 +77,8 @@ function createVillain() {
 	villain.mesh.position.x = -150
 	villain.mesh.position.z = -250
 	scene.add(villain.mesh)
+
+	villainActivityManager = new ActivityManager()
 }
 
 function render() {
@@ -87,7 +92,7 @@ function villainScript() {
 		{ activity: villain.moveDown, time: 50 },
 	]
 
-	villain.activityManager(script)
+	villainActivityManager.play(script, villain)
 }
 
 function animate() {
