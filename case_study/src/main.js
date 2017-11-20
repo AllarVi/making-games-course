@@ -26,7 +26,8 @@ function initRenderer() {
 		alpha: true,
 		antialias: true,
 	})
-	renderer.setSize(container.width, container.offsetHeight)
+	// Previously: container.width, container.offsetHeight
+	renderer.setSize(window.innerWidth, window.innerHeight)
 	renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1)
 	renderer.shadowMap.enabled = true
 
