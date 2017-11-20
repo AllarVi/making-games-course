@@ -19,6 +19,8 @@ let villainActivityManager
 
 let tower
 
+let particleSystem
+
 let container
 
 function initRenderer() {
@@ -53,7 +55,7 @@ function handleWindowResize() {
 
 function initScreenAnd3D() {
 	initScene()
-	camera = cameraFactory(CAMERA_TYPE.PERSPECTIVE)
+	camera = cameraFactory(CAMERA_TYPE.ORTHOGRAPHIC)
 	initRenderer()
 
 	window.addEventListener('resize', handleWindowResize, false)
@@ -94,6 +96,45 @@ function createTower() {
 	scene.add(tower)
 }
 
+function createParticle() {
+	// create the particle variables
+	const particleCount = 50
+	const particles = new THREE.Geometry()
+
+	const loader = new THREE.TextureLoader()
+	loader.crossOrigin = true
+	const pMaterial = new THREE.PointsMaterial({
+		color: 0xFFFFFF,
+		size: 5,
+		map: loader.load('https://aerotwist.com/static/tutorials/creating-particles-with-three-js/images/particle.png'),
+		blending: THREE.AdditiveBlending,
+		transparent: true,
+	})
+	// now create the individual particles
+	for (let p = 0; p < particleCount; p += 1) {
+		// create a particle with random
+		// position values, -250 -> 250
+		const pX = (Math.random() * 500) - 250
+		const pY = (Math.random() * 500) - 250
+		const pZ = (Math.random() * 500) - 250
+		const particle = new THREE.Vector3(pX, pY, pZ)
+
+		// add it to the geometry
+		particles.vertices.push(particle)
+	}
+
+	// create the particle system
+	particleSystem = new THREE.Points(
+		particles,
+		pMaterial,
+	)
+
+	particleSystem.sortParticles = true
+
+	// add it to the scene
+	scene.add(particleSystem)
+}
+
 function render() {
 	renderer.render(scene, camera)
 }
@@ -118,6 +159,9 @@ function animate() {
 	keyboard.handleKeyboardEvents(hero, KEYS)
 
 	camera.update()
+
+	// particleSystem.rotation.y += 0.01
+
 	render()
 }
 
@@ -141,8 +185,9 @@ function init() {
 	createHero()
 	createVillain()
 	createTower()
+	// createParticle()
 	animate()
-	render()
+	// render()
 }
 
 // Entry point

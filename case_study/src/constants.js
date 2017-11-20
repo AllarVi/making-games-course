@@ -30,16 +30,16 @@ export default KEYS
 export const brownMat = new MeshStandardMaterial({
 	color: 0x401A07,
 	side: DoubleSide,
-	shading: SmoothShading,
+	flatShading: SmoothShading,
 	roughness: 1,
 })
 
 export const blueMat = new MeshPhongMaterial({
 	color: 0x5b9696,
-	shading: FlatShading,
+	flatShading: FlatShading,
 })
 
 export const redMat = new MeshPhongMaterial({
 	color: 0xf44250,
-	shading: FlatShading,
+	flatShading: FlatShading,
 })
