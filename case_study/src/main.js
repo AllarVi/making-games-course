@@ -17,6 +17,8 @@ let hero
 let villain
 let villainActivityManager
 
+let tower
+
 let container
 
 function initRenderer() {
@@ -51,7 +53,7 @@ function handleWindowResize() {
 
 function initScreenAnd3D() {
 	initScene()
-	camera = cameraFactory(CAMERA_TYPE.ORTHOGRAPHIC)
+	camera = cameraFactory(CAMERA_TYPE.PERSPECTIVE)
 	initRenderer()
 
 	window.addEventListener('resize', handleWindowResize, false)
@@ -80,6 +82,16 @@ function createVillain() {
 	scene.add(villain.mesh)
 
 	villainActivityManager = new ActivityManager()
+}
+
+function createTower() {
+	// create the Cube
+	tower = new THREE.Mesh(new THREE.CubeGeometry(10, 50, 10), new THREE.MeshNormalMaterial())
+	tower.position.y = 10
+	tower.position.z = -20
+	tower.position.x = 100
+	// add the object to the scene
+	scene.add(tower)
 }
 
 function render() {
@@ -128,6 +140,7 @@ function init() {
 	createLights()
 	createHero()
 	createVillain()
+	createTower()
 	animate()
 	render()
 }
