@@ -21,6 +21,10 @@ let tower
 
 let particleSystem
 
+let bullet
+let bulletTime = 0
+const bulletAcceleration = 2
+
 let container
 
 function initRenderer() {
@@ -96,6 +100,16 @@ function createTower() {
 	scene.add(tower)
 }
 
+function createBullet() {
+	// create the Cube
+	bullet = new THREE.Mesh(new THREE.SphereGeometry(5), new THREE.MeshNormalMaterial())
+	bullet.position.y = 10
+	bullet.position.z = -30
+	bullet.position.x = 100
+	// add the object to the scene
+	scene.add(bullet)
+}
+
 function createParticle() {
 	// create the particle variables
 	const particleCount = 50
@@ -162,6 +176,15 @@ function animate() {
 
 	// particleSystem.rotation.y += 0.01
 
+	bulletTime += 0.1
+	const bulletPosition = (1 / 2) * bulletAcceleration * (bulletTime ** 2)
+	bullet.position.z -= bulletPosition
+
+	if (bulletTime > 10) {
+		bulletTime = 0
+		bullet.position.z = -30
+	}
+
 	render()
 }
 
@@ -185,6 +208,7 @@ function init() {
 	createHero()
 	createVillain()
 	createTower()
+	createBullet()
 	// createParticle()
 	animate()
 	// render()
