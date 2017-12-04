@@ -14,8 +14,10 @@ let camera
 let renderer
 
 let hero
+
 let villain
 let villainActivityManager
+const villainVector3 = new THREE.Vector3()
 
 let tower
 
@@ -24,6 +26,7 @@ let particleSystem
 let bullet
 let bulletTime = 0
 const bulletAcceleration = 2
+const bulletVector3 = new THREE.Vector3()
 
 let container
 
@@ -183,6 +186,17 @@ function animate() {
 	if (bulletTime > 10) {
 		bulletTime = 0
 		bullet.position.z = -30
+	}
+
+	// Collision
+	bulletVector3.setFromMatrixPosition(bullet.matrixWorld)
+	villainVector3.setFromMatrixPosition(villain.mesh.matrixWorld)
+
+	// Reset villain position
+	if (villainVector3.distanceTo(bulletVector3) < 29) {
+		villain.mesh.position.y = -15
+		villain.mesh.position.x = -150
+		villain.mesh.position.z = -250
 	}
 
 	render()

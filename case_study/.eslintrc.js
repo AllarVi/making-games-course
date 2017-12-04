@@ -11,7 +11,7 @@ module.exports = {
 		'semi': ['off'],
 		'require-jsdoc': ['off'],
 		'no-undef': ['off'],
-		'indent': ['error', 'tab', {'SwitchCase': 1}],
+		'indent': ['error', 'tab', { 'SwitchCase': 1 }],
 		'no-tabs': 0,
 		'no-underscore-dangle': 0,
 	},
