@@ -1,3 +1,5 @@
+import spawnTower from './main'
+
 export default class Keyboard {
 	constructor() {
 		this.keysDown = {}
@@ -46,6 +48,10 @@ export default class Keyboard {
 
 		if (keys.SPACE in this.keysDown) {
 			hero.jump()
+		}
+
+		if (keys.T in this.keysDown) {
+			spawnTower()
 		}
 	}
 }

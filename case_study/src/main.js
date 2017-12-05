@@ -19,14 +19,15 @@ let villain
 let villainActivityManager
 const villainVector3 = new THREE.Vector3()
 
-let tower
+const towerList = []
 
 let particleSystem
 
-let bullet
 let bulletTime = 0
 const bulletAcceleration = 2
 const bulletVector3 = new THREE.Vector3()
+let bullets = []
+let bulletIndex = 0
 
 let container
 
@@ -93,24 +94,48 @@ function createVillain() {
 	villainActivityManager = new ActivityManager()
 }
 
-function createTower() {
-	// create the Cube
-	tower = new THREE.Mesh(new THREE.CubeGeometry(10, 50, 10), new THREE.MeshNormalMaterial())
-	tower.position.y = 10
-	tower.position.z = -20
-	tower.position.x = 100
-	// add the object to the scene
-	scene.add(tower)
+function createBullet(positionY, positionZ, positionX) {
+	const newBullet = new THREE.Mesh(
+		new THREE.SphereGeometry(5),
+		new THREE.MeshNormalMaterial(),
+	)
+
+	newBullet.position.y = positionY
+	newBullet.position.z = positionZ
+	newBullet.position.x = positionX
+
+	scene.add(newBullet)
+
+	return newBullet
 }
 
-function createBullet() {
-	// create the Cube
-	bullet = new THREE.Mesh(new THREE.SphereGeometry(5), new THREE.MeshNormalMaterial())
-	bullet.position.y = 10
-	bullet.position.z = -30
-	bullet.position.x = 100
-	// add the object to the scene
-	scene.add(bullet)
+function createTower(positionY, positionZ, positionX) {
+	const newTower = new THREE.Mesh(
+		new THREE.CubeGeometry(10, 50, 10),
+		new THREE.MeshNormalMaterial(),
+	)
+
+	newTower.position.y = positionY
+	newTower.position.z = positionZ
+	newTower.position.x = positionX
+
+	scene.add(newTower)
+
+	const newBullet = createBullet(
+		newTower.position.y,
+		newTower.position.z - 10,
+		newTower.position.x,
+	)
+
+	const bulletClass = {
+		bullet: newBullet,
+		initialPositionY: positionY,
+		initialPositionZ: newTower.position.z - 10,
+		initialPositionX: positionX,
+	}
+	bullets = bullets.concat(bulletClass)
+
+	return newTower
 }
 
 function createParticle() {
@@ -166,6 +191,40 @@ function villainScript() {
 	villainActivityManager.play(script, villain)
 }
 
+function bulletLogic() {
+	if (!bullets[bulletIndex]) {
+		bulletIndex = 0
+	}
+
+	bulletTime += 0.1
+
+	bullets[bulletIndex].bullet.position.z -= (1 / 2) * bulletAcceleration * (bulletTime ** 2)
+
+	if (bulletTime > 10) {
+		bulletTime = 0
+		bullets[bulletIndex].bullet.position.z = bullets[bulletIndex].initialPositionZ
+	}
+
+	// Collision
+	bullets.forEach((bulletClass) => {
+		bulletVector3.setFromMatrixPosition(bulletClass.bullet.matrixWorld)
+		villainVector3.setFromMatrixPosition(villain.mesh.matrixWorld)
+
+		// Reset villain position and restart script
+		if (villainVector3.distanceTo(bulletVector3) > 0 &&
+			villainVector3.distanceTo(bulletVector3) < 29) {
+			villain.mesh.position.y = -15
+			villain.mesh.position.x = -150
+			villain.mesh.position.z = -250
+
+			villainActivityManager = new ActivityManager()
+			villainScript()
+		}
+	})
+
+	bulletIndex += 1
+}
+
 function animate() {
 	requestAnimationFrame(animate)
 
@@ -179,30 +238,19 @@ function animate() {
 
 	// particleSystem.rotation.y += 0.01
 
-	bulletTime += 0.1
-	bullet.position.z -= (1 / 2) * bulletAcceleration * (bulletTime ** 2)
-
-	if (bulletTime > 10) {
-		bulletTime = 0
-		bullet.position.z = -30
-	}
-
-	// Collision
-	bulletVector3.setFromMatrixPosition(bullet.matrixWorld)
-	villainVector3.setFromMatrixPosition(villain.mesh.matrixWorld)
-
-	// Reset villain position and restart script
-	if (villainVector3.distanceTo(bulletVector3) > 0 &&
-		villainVector3.distanceTo(bulletVector3) < 29) {
-		villain.mesh.position.y = -15
-		villain.mesh.position.x = -150
-		villain.mesh.position.z = -250
-
-		villainActivityManager = new ActivityManager()
-		villainScript()
-	}
+	bulletLogic()
 
 	render()
+}
+
+export default function spawnTower() {
+	const newTower = createTower(
+		hero.mesh.position.y,
+		hero.mesh.position.z,
+		hero.mesh.position.x,
+	)
+
+	towerList.push(newTower)
 }
 
 function initFloor() {
@@ -224,8 +272,7 @@ function init() {
 	createLights()
 	createHero()
 	createVillain()
-	createTower()
-	createBullet()
+	createTower(10, -20, 100)
 	// createParticle()
 	animate()
 	// render()
