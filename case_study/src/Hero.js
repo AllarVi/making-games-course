@@ -36,7 +36,7 @@ export default class Hero {
 		this.handL.position.z = -this.handR.position.z
 		this.body.add(this.handL)
 
-		const headGeom = new THREE.CubeGeometry(16, 16, 16, 1)//
+		const headGeom = new THREE.CubeGeometry(16, 16, 16, 1)
 		this.head = new THREE.Mesh(headGeom, mainMaterial)
 		this.head.position.y = 21
 		this.head.castShadow = true

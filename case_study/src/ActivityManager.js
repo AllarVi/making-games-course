@@ -5,6 +5,8 @@ export default class ActivityManager {
 	}
 
 	play(script, object) {
+		// console.log('start activity')
+		// Return if no activity found at current activityIndex
 		if (!script[this.activityIndex]) {
 			return
 		}
@@ -20,5 +22,10 @@ export default class ActivityManager {
 		}
 
 		this.elapsed += 0.2
+	}
+
+	stop() {
+		// console.log('stop activity')
+		this.activityIndex = -1
 	}
 }

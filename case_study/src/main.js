@@ -180,8 +180,7 @@ function animate() {
 	// particleSystem.rotation.y += 0.01
 
 	bulletTime += 0.1
-	const bulletPosition = (1 / 2) * bulletAcceleration * (bulletTime ** 2)
-	bullet.position.z -= bulletPosition
+	bullet.position.z -= (1 / 2) * bulletAcceleration * (bulletTime ** 2)
 
 	if (bulletTime > 10) {
 		bulletTime = 0
@@ -192,11 +191,15 @@ function animate() {
 	bulletVector3.setFromMatrixPosition(bullet.matrixWorld)
 	villainVector3.setFromMatrixPosition(villain.mesh.matrixWorld)
 
-	// Reset villain position
-	if (villainVector3.distanceTo(bulletVector3) < 29) {
+	// Reset villain position and restart script
+	if (villainVector3.distanceTo(bulletVector3) > 0 &&
+		villainVector3.distanceTo(bulletVector3) < 29) {
 		villain.mesh.position.y = -15
 		villain.mesh.position.x = -150
 		villain.mesh.position.z = -250
+
+		villainActivityManager = new ActivityManager()
+		villainScript()
 	}
 
 	render()
