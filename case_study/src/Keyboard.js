@@ -49,9 +49,13 @@ export default class Keyboard {
 		if (keys.SPACE in this.keysDown) {
 			hero.jump()
 		}
+	}
 
+	handleSpawnTowerKey(hero, keys) {
 		if (keys.T in this.keysDown) {
 			spawnTower()
+			return true // Tower spawned
 		}
+		return false
 	}
 }

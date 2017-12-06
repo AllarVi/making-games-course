@@ -1,13 +1,13 @@
 import * as THREE from 'three'
-import Keyboard from './Keyboard'
 import Hero from './Hero'
 import KEYS, { CAMERA_TYPE, MATERIAL_COLORS } from './constants'
 import TrigoCircle from './TrigoCircle'
 import cameraFactory from './CameraFactory'
 import ShadowLight from './ShadowLight'
 import ActivityManager from './ActivityManager'
+import PlayerManager from './PlayerManager'
 
-let keyboard
+let playerManager
 
 let scene
 let camera
@@ -219,6 +219,8 @@ function bulletLogic() {
 
 			villainActivityManager = new ActivityManager()
 			villainScript()
+
+			playerManager.availableTowers += 1
 		}
 	})
 
@@ -232,7 +234,13 @@ function animate() {
 
 	villainScript()
 
-	keyboard.handleKeyboardEvents(hero, KEYS)
+	playerManager.keyboard.handleKeyboardEvents(hero, KEYS)
+
+	if (playerManager.availableTowers > 1) {
+		if (playerManager.keyboard.handleSpawnTowerKey(hero, KEYS)) {
+			playerManager.availableTowers -= 1
+		}
+	}
 
 	camera.update()
 
@@ -265,7 +273,7 @@ function initFloor() {
 
 function init() {
 	TrigoCircle.initTrigoCircle()
-	keyboard = new Keyboard()
+	playerManager = new PlayerManager()
 
 	initScreenAnd3D()
 	initFloor()
