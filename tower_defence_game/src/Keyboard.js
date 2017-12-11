@@ -8,7 +8,7 @@ export default class Keyboard {
 
 	initKeyboardEvents() {
 		addEventListener('keydown', (e) => {
-			e.preventDefault()
+			// e.preventDefault()
 			this.keysDown[e.keyCode] = true
 			this.keysDown.anyKeyDown = true
 		}, false)

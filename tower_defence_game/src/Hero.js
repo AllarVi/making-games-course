@@ -213,14 +213,14 @@ export default class Hero {
 	}
 
 	moveDown() {
-		this.run()
+		// this.run()
 
 		this.mesh.position.z += 0.5
 		this.mesh.rotation.y = Math.PI + (Math.PI / 2)
 	}
 
 	moveRight() {
-		this.run()
+		// this.run()
 
 		this.mesh.position.x += 0.5
 		this.mesh.rotation.y = 0

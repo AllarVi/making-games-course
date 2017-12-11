@@ -1,4 +1,4 @@
-export function createLabel(fromTop) {
+export function createLabel(fromTop, fromRight) {
 	const text2 = document.createElement('div')
 	text2.style.position = 'absolute'
 	// text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
@@ -6,7 +6,7 @@ export function createLabel(fromTop) {
 	text2.style.height = 100
 	text2.style.backgroundColor = 'white'
 	text2.style.top = `${fromTop}px`
-	text2.style.right = `${200}px`
+	text2.style.right = `${fromRight}px`
 	return text2
 }
 

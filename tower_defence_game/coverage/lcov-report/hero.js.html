@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for Hero.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="index.html">All files</a> Hero.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">61.54% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>40/65</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/4</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>2/3</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">61.54% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>40/65</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as THREE from 'three'
+&nbsp;
+class Hero {
+&nbsp;
+  constructor () {
+    this.runningDistance = 0
+&nbsp;
+    this.mesh = new THREE.Group()
+    this.body = new THREE.Group()
+    this.mesh.add(this.body)
+&nbsp;
+    let torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1)//
+    this.torso = new THREE.Mesh(torsoGeom, blueMat)
+    this.torso.position.y = 8
+    this.torso.castShadow = true
+    this.body.add(this.torso)
+&nbsp;
+    let handGeom = new THREE.CubeGeometry(3, 3, 3, 1)
+    this.handR = new THREE.Mesh(handGeom, brownMat)
+    this.handR.position.z = 7
+    this.handR.position.y = 8
+    this.body.add(this.handR)
+&nbsp;
+    this.handL = this.handR.clone()
+    this.handL.position.z = -this.handR.position.z
+    this.body.add(this.handL)
+&nbsp;
+    let headGeom = new THREE.CubeGeometry(16, 16, 16, 1)//
+    this.head = new THREE.Mesh(headGeom, blueMat)
+    this.head.position.y = 21
+    this.head.castShadow = true
+    this.body.add(this.head)
+&nbsp;
+    let legGeom = new THREE.CubeGeometry(8, 3, 5, 1)
+&nbsp;
+    this.legR = new THREE.Mesh(legGeom, brownMat)
+    this.legR.position.x = 0
+    this.legR.position.z = 7
+    this.legR.position.y = 0
+    this.legR.castShadow = true
+    this.body.add(this.legR)
+&nbsp;
+    this.legL = this.legR.clone()
+    this.legL.position.z = -this.legR.position.z
+    this.legL.castShadow = true
+    this.body.add(this.legL)
+&nbsp;
+    this.body.traverse(function (object) {
+      if (object instanceof THREE.Mesh) {
+        object.castShadow = true
+        object.receiveShadow = true
+      }
+    })
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ru</span>n () {
+    let s = <span class="cstat-no" title="statement not covered" >0.2</span>
+    let t = <span class="cstat-no" title="statement not covered" >this.runningDistance</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    t = t % (2 * Math.PI)</span>
+&nbsp;
+    let amp = <span class="cstat-no" title="statement not covered" >4</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    this.runningDistance += s</span>
+<span class="cstat-no" title="statement not covered" >    this.legR.position.x = Math.cos(t) * amp</span>
+<span class="cstat-no" title="statement not covered" >    this.legR.position.y = -Math.sin(t) * amp</span>
+<span class="cstat-no" title="statement not covered" >    this.legL.position.x = Math.cos(t + Math.PI) * amp</span>
+<span class="cstat-no" title="statement not covered" >    this.legL.position.y = -Math.sin(t + Math.PI) * amp</span>
+<span class="cstat-no" title="statement not covered" >    this.legL.position.y = Math.max(0, this.legL.position.y)</span>
+<span class="cstat-no" title="statement not covered" >    this.legR.position.y = Math.max(0, this.legR.position.y)</span>
+<span class="cstat-no" title="statement not covered" >    this.torso.position.y = 8 - Math.cos(t * 2) * amp * 0.2</span>
+<span class="cstat-no" title="statement not covered" >    this.head.position.y = 21 - Math.cos(t * 2) * amp * 0.3</span>
+<span class="cstat-no" title="statement not covered" >    this.torso.rotation.y = -Math.cos(t + Math.PI) * amp * 0.05</span>
+<span class="cstat-no" title="statement not covered" >    this.handR.position.x = -Math.cos(t) * amp</span>
+<span class="cstat-no" title="statement not covered" >    this.handR.rotation.z = -Math.cos(t) * Math.PI / 8</span>
+<span class="cstat-no" title="statement not covered" >    this.handL.position.x = -Math.cos(t + Math.PI) * amp</span>
+<span class="cstat-no" title="statement not covered" >    this.handL.rotation.z = -Math.cos(t + Math.PI) * Math.PI / 8</span>
+<span class="cstat-no" title="statement not covered" >    this.head.rotation.x = Math.cos(t) * amp * 0.02</span>
+<span class="cstat-no" title="statement not covered" >    this.head.rotation.y = Math.cos(t) * amp * 0.01</span>
+<span class="cstat-no" title="statement not covered" >    if (t &gt; Math.PI) {</span>
+<span class="cstat-no" title="statement not covered" >      this.legR.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4</span>
+<span class="cstat-no" title="statement not covered" >      this.legL.rotation.z = 0</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      this.legR.rotation.z = 0</span>
+<span class="cstat-no" title="statement not covered" >      this.legL.rotation.z = Math.cos(t * 2 + Math.PI / 2) * Math.PI / 4</span>
+    }
+  }
+}
+&nbsp;
+// MATERIALS
+&nbsp;
+let brownMat = new THREE.MeshStandardMaterial({
+  color: 0x401A07,
+  side: THREE.DoubleSide,
+  shading: THREE.SmoothShading,
+  roughness: 1,
+})
+&nbsp;
+let blueMat = new THREE.MeshPhongMaterial({
+  color: 0x5b9696,
+  shading: THREE.FlatShading,
+})
+&nbsp;
+module.exports = Hero
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Oct 20 2017 18:13:19 GMT+0300 (EEST)
+</div>
+</div>
+<script src="prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="sorter.js"></script>
+</body>
+</html>

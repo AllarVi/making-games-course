@@ -8,6 +8,12 @@ import ActivityManager from './ActivityManager'
 import PlayerManager from './PlayerManager'
 import { createLabel, updateLabelText } from './LabelManager'
 
+const Stats = require('stats.js')
+
+const stats = new Stats()
+stats.showPanel(2) // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom)
+
 let playerManager
 
 let scene
@@ -32,18 +38,21 @@ let bulletIndex = 0
 
 let container
 
-const towerListLabel = createLabel(40)
-const availableTowersLabel = createLabel(60)
-const bulletsInGameLabel = createLabel(80)
+const towerListLabel = createLabel(40, 200)
+const availableTowersLabel = createLabel(60, 200)
+
+const bulletsInGameLabel = createLabel(80, 200)
+const healthLabel = createLabel(40, 800)
 
 function initRenderer() {
 	container = document.getElementById('world')
 
 	renderer = new THREE.WebGLRenderer({
-		alpha: true,
-		antialias: true,
+		alpha: false,
+		antialias: false,
 	})
 	// Previously: container.width, container.offsetHeight
+	// renderer.setSize(window.innerWidth, window.innerHeight)
 	renderer.setSize(window.innerWidth, window.innerHeight)
 	renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1)
 	renderer.shadowMap.enabled = true
@@ -233,9 +242,10 @@ function bulletLogic() {
 }
 
 function animate() {
-	requestAnimationFrame(animate)
+	stats.begin()
+	// requestAnimationFrame(animate)
 
-	TrigoCircle.updateTrigoCircle(hero.runningDistance)
+	// TrigoCircle.updateTrigoCircle(hero.runningDistance)
 
 	villainScript()
 
@@ -247,7 +257,7 @@ function animate() {
 		}
 	}
 
-	camera.update()
+	// camera.update()
 
 	// particleSystem.rotation.y += 0.01
 
@@ -257,7 +267,12 @@ function animate() {
 	updateLabelText(availableTowersLabel, `Available towers: ${playerManager.availableTowers}`)
 	updateLabelText(bulletsInGameLabel, `Bullets in game: ${bullets.length}`)
 
+	updateLabelText(healthLabel, `Health: ${playerManager.health}`)
+
 	render()
+
+	stats.end()
+	requestAnimationFrame(animate)
 }
 
 export default function spawnTower() {
@@ -292,7 +307,6 @@ function init() {
 	createTower(10, -20, 100)
 	// createParticle()
 	animate()
-	// render()
 }
 
 // Entry point
