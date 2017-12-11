@@ -45180,14 +45180,14 @@ var OrthographicCamera = function (_THREE$OrthographicCa) {
 		var aspect = window.innerWidth / window.innerHeight;
 		var d = 150;
 
-		var _this = _possibleConstructorReturn(this, (OrthographicCamera.__proto__ || Object.getPrototypeOf(OrthographicCamera)).call(this, -d * aspect, d * aspect, d, -d, 1, 4000));
+		var _this = _possibleConstructorReturn(this, (OrthographicCamera.__proto__ || Object.getPrototypeOf(OrthographicCamera)).call(this, -d * aspect, d * aspect, d, -d, 0.1, 10000));
 
 		_this.position.x = 20;
 		_this.position.z = 20;
 		_this.position.y = 120;
 
 		_this.rotation.y = Math.PI;
-		_this.rotation.x = 3 / 4 * Math.PI;
+		_this.rotation.x = 3 / 3.4 * Math.PI;
 		_this.rotation.z = Math.PI;
 
 		return _ret = _this, _possibleConstructorReturn(_this, _ret);
@@ -45333,7 +45333,7 @@ var PlayerManager = function () {
 		this.keyboard = new _Keyboard2['default']();
 		this.availableTowers = 0;
 
-		this.health = 10;
+		this.health = 3;
 	}
 
 	return PlayerManager;
@@ -45591,9 +45591,12 @@ var container = void 0;
 
 var towerListLabel = (0, _LabelManager.createLabel)(40, 200);
 var availableTowersLabel = (0, _LabelManager.createLabel)(60, 200);
-
 var bulletsInGameLabel = (0, _LabelManager.createLabel)(80, 200);
+var villainPositionLabel = (0, _LabelManager.createLabel)(100, 200);
+
 var healthLabel = (0, _LabelManager.createLabel)(40, 800);
+
+var skyboxMesh = void 0;
 
 function initRenderer() {
 	container = document.getElementById('world');
@@ -45603,7 +45606,6 @@ function initRenderer() {
 		antialias: false
 	});
 	// Previously: container.width, container.offsetHeight
-	// renderer.setSize(window.innerWidth, window.innerHeight)
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 	renderer.shadowMap.enabled = true;
@@ -45734,9 +45736,24 @@ function render() {
 }
 
 function villainScript() {
-	var script = [{ activity: villain.moveDown, time: 50 }, { activity: villain.moveRight, time: 100 }, { activity: villain.moveDown, time: 50 }];
+	var script = [{ activity: villain.moveDown, time: 50 }, { activity: villain.moveRight, time: 100 }, { activity: villain.moveDown, time: 150 }];
 
 	villainActivityManager.play(script, villain);
+}
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	// The maximum is exclusive and the minimum is inclusive
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function restartVillain() {
+	villain.mesh.position.y = -15;
+	villain.mesh.position.x = getRandomInt(-200, 100);
+	villain.mesh.position.z = -250;
+
+	villainActivityManager = new _ActivityManager2['default']();
 }
 
 function bulletLogic() {
@@ -45760,18 +45777,22 @@ function bulletLogic() {
 
 		// Reset villain position and restart script
 		if (villainVector3.distanceTo(bulletVector3) > 0 && villainVector3.distanceTo(bulletVector3) < 29) {
-			villain.mesh.position.y = -15;
-			villain.mesh.position.x = -150;
-			villain.mesh.position.z = -250;
-
-			villainActivityManager = new _ActivityManager2['default']();
-			villainScript();
+			restartVillain();
 
 			playerManager.availableTowers += 1;
 		}
 	});
 
 	bulletIndex += 1;
+}
+
+function updateLabels() {
+	(0, _LabelManager.updateLabelText)(towerListLabel, 'New towers built: ' + towerList.length);
+	(0, _LabelManager.updateLabelText)(availableTowersLabel, 'Available towers: ' + playerManager.availableTowers);
+	(0, _LabelManager.updateLabelText)(bulletsInGameLabel, 'Bullets in game: ' + bullets.length);
+	(0, _LabelManager.updateLabelText)(villainPositionLabel, '(Enemy position) X: ' + villain.mesh.position.x + ' Z: ' + villain.mesh.position.z);
+
+	(0, _LabelManager.updateLabelText)(healthLabel, 'Health: ' + playerManager.health);
 }
 
 function animate() {
@@ -45790,17 +45811,22 @@ function animate() {
 		}
 	}
 
+	if (villain.mesh.position.z > 250) {
+		restartVillain();
+		playerManager.health -= 1;
+	}
+
+	if (playerManager.health < 1) {
+		console.log('You lost, better luck next time!');
+	}
+
 	// camera.update()
 
 	// particleSystem.rotation.y += 0.01
 
 	bulletLogic();
 
-	(0, _LabelManager.updateLabelText)(towerListLabel, 'New towers built: ' + towerList.length);
-	(0, _LabelManager.updateLabelText)(availableTowersLabel, 'Available towers: ' + playerManager.availableTowers);
-	(0, _LabelManager.updateLabelText)(bulletsInGameLabel, 'Bullets in game: ' + bullets.length);
-
-	(0, _LabelManager.updateLabelText)(healthLabel, 'Health: ' + playerManager.health);
+	updateLabels();
 
 	render();
 
@@ -45814,9 +45840,42 @@ function spawnTower() {
 	towerList.push(newTower);
 }
 
+function initSky() {
+	var materials = [new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load('images/sky/up.png'),
+		side: THREE.DoubleSide
+	}), new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load('images/sky/up.png'),
+		side: THREE.DoubleSide
+	}), new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load('images/sky/up.png'),
+		side: THREE.DoubleSide
+	}), new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load('images/sky/up.png'),
+		side: THREE.DoubleSide
+	}), new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load('images/sky/up.png'),
+		side: THREE.DoubleSide
+	}), new THREE.MeshBasicMaterial({
+		map: new THREE.TextureLoader().load('images/sky/up.png'),
+		side: THREE.DoubleSide
+	})];
+
+	skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry(10000, 10000, 10000), materials);
+	// add it to the scene
+	scene.add(skyboxMesh);
+}
+
 function initFloor() {
-	var geometry = new THREE.PlaneGeometry(1000, 1000, 1, 1);
-	var material = new THREE.MeshBasicMaterial({ color: 0xD9EEFC });
+	var floorTexture = new THREE.TextureLoader().load('images/ground.jpg'); // 256x256
+	floorTexture.wrapS = THREE.RepeatWrapping;
+	floorTexture.wrapT = THREE.RepeatWrapping;
+	floorTexture.offset.set(0, 0);
+	floorTexture.repeat.set(4, 4);
+
+	var material = new THREE.MeshBasicMaterial({ map: floorTexture, side: THREE.DoubleSide });
+	// const material = new THREE.MeshBasicMaterial({ color: 0xD9EEFC })
+	var geometry = new THREE.PlaneGeometry(1000, 1000);
 	var floor = new THREE.Mesh(geometry, material);
 	floor.material.side = THREE.DoubleSide;
 	floor.rotation.x = Math.PI / 2;
@@ -45830,6 +45889,7 @@ function init() {
 
 	initScreenAnd3D();
 	initFloor();
+	initSky();
 	createLights();
 	createHero();
 	createVillain();

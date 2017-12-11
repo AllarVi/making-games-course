@@ -10,8 +10,8 @@ export default class OrthographicCamera extends THREE.OrthographicCamera {
 			d * aspect,
 			d,
 			-d,
-			1,
-			4000,
+			0.1,
+			10000,
 		)
 
 		this.position.x = 20
@@ -19,7 +19,7 @@ export default class OrthographicCamera extends THREE.OrthographicCamera {
 		this.position.y = 120
 
 		this.rotation.y = Math.PI
-		this.rotation.x = (3 / 4) * Math.PI
+		this.rotation.x = (3 / 3.4) * Math.PI
 		this.rotation.z = Math.PI
 
 		return this

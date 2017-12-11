@@ -40,9 +40,12 @@ let container
 
 const towerListLabel = createLabel(40, 200)
 const availableTowersLabel = createLabel(60, 200)
-
 const bulletsInGameLabel = createLabel(80, 200)
+const villainPositionLabel = createLabel(100, 200)
+
 const healthLabel = createLabel(40, 800)
+
+let skyboxMesh
 
 function initRenderer() {
 	container = document.getElementById('world')
@@ -52,7 +55,6 @@ function initRenderer() {
 		antialias: false,
 	})
 	// Previously: container.width, container.offsetHeight
-	// renderer.setSize(window.innerWidth, window.innerHeight)
 	renderer.setSize(window.innerWidth, window.innerHeight)
 	renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1)
 	renderer.shadowMap.enabled = true
@@ -199,10 +201,25 @@ function villainScript() {
 	const script = [
 		{ activity: villain.moveDown, time: 50 },
 		{ activity: villain.moveRight, time: 100 },
-		{ activity: villain.moveDown, time: 50 },
+		{ activity: villain.moveDown, time: 150 },
 	]
 
 	villainActivityManager.play(script, villain)
+}
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	// The maximum is exclusive and the minimum is inclusive
+	return Math.floor(Math.random() * (max - min)) + min
+}
+
+function restartVillain() {
+	villain.mesh.position.y = -15
+	villain.mesh.position.x = getRandomInt(-200, 100)
+	villain.mesh.position.z = -250
+
+	villainActivityManager = new ActivityManager()
 }
 
 function bulletLogic() {
@@ -227,18 +244,22 @@ function bulletLogic() {
 		// Reset villain position and restart script
 		if (villainVector3.distanceTo(bulletVector3) > 0 &&
 			villainVector3.distanceTo(bulletVector3) < 29) {
-			villain.mesh.position.y = -15
-			villain.mesh.position.x = -150
-			villain.mesh.position.z = -250
-
-			villainActivityManager = new ActivityManager()
-			villainScript()
+			restartVillain()
 
 			playerManager.availableTowers += 1
 		}
 	})
 
 	bulletIndex += 1
+}
+
+function updateLabels() {
+	updateLabelText(towerListLabel, `New towers built: ${towerList.length}`)
+	updateLabelText(availableTowersLabel, `Available towers: ${playerManager.availableTowers}`)
+	updateLabelText(bulletsInGameLabel, `Bullets in game: ${bullets.length}`)
+	updateLabelText(villainPositionLabel, `(Enemy position) X: ${villain.mesh.position.x} Z: ${villain.mesh.position.z}`)
+
+	updateLabelText(healthLabel, `Health: ${playerManager.health}`)
 }
 
 function animate() {
@@ -257,17 +278,22 @@ function animate() {
 		}
 	}
 
+	if (villain.mesh.position.z > 250) {
+		restartVillain()
+		playerManager.health -= 1
+	}
+
+	if (playerManager.health < 1) {
+		console.log('You lost, better luck next time!')
+	}
+
 	// camera.update()
 
 	// particleSystem.rotation.y += 0.01
 
 	bulletLogic()
 
-	updateLabelText(towerListLabel, `New towers built: ${towerList.length}`)
-	updateLabelText(availableTowersLabel, `Available towers: ${playerManager.availableTowers}`)
-	updateLabelText(bulletsInGameLabel, `Bullets in game: ${bullets.length}`)
-
-	updateLabelText(healthLabel, `Health: ${playerManager.health}`)
+	updateLabels()
 
 	render()
 
@@ -285,9 +311,52 @@ export default function spawnTower() {
 	towerList.push(newTower)
 }
 
+function initSky() {
+	const materials = [
+		new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('images/sky/up.png'),
+			side: THREE.DoubleSide,
+		}),
+		new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('images/sky/up.png'),
+			side: THREE.DoubleSide,
+		}),
+		new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('images/sky/up.png'),
+			side: THREE.DoubleSide,
+		}),
+		new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('images/sky/up.png'),
+			side: THREE.DoubleSide,
+		}),
+		new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('images/sky/up.png'),
+			side: THREE.DoubleSide,
+		}),
+		new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('images/sky/up.png'),
+			side: THREE.DoubleSide,
+		}),
+	]
+
+	skyboxMesh = new THREE.Mesh(
+		new THREE.CubeGeometry(10000, 10000, 10000),
+		materials,
+	)
+	// add it to the scene
+	scene.add(skyboxMesh)
+}
+
 function initFloor() {
-	const geometry = new THREE.PlaneGeometry(1000, 1000, 1, 1)
-	const material = new THREE.MeshBasicMaterial({ color: 0xD9EEFC })
+	const floorTexture = new THREE.TextureLoader().load('images/ground.jpg') // 256x256
+	floorTexture.wrapS = THREE.RepeatWrapping
+	floorTexture.wrapT = THREE.RepeatWrapping
+	floorTexture.offset.set(0, 0)
+	floorTexture.repeat.set(4, 4)
+
+	const material = new THREE.MeshBasicMaterial({ map: floorTexture, side: THREE.DoubleSide })
+	// const material = new THREE.MeshBasicMaterial({ color: 0xD9EEFC })
+	const geometry = new THREE.PlaneGeometry(1000, 1000)
 	const floor = new THREE.Mesh(geometry, material)
 	floor.material.side = THREE.DoubleSide
 	floor.rotation.x = Math.PI / 2
@@ -301,6 +370,7 @@ function init() {
 
 	initScreenAnd3D()
 	initFloor()
+	initSky()
 	createLights()
 	createHero()
 	createVillain()

@@ -5,6 +5,6 @@ export default class PlayerManager {
 		this.keyboard = new Keyboard()
 		this.availableTowers = 0
 
-		this.health = 10
+		this.health = 3
 	}
 }
