@@ -6,6 +6,7 @@ import cameraFactory from './CameraFactory'
 import ShadowLight from './ShadowLight'
 import ActivityManager from './ActivityManager'
 import PlayerManager from './PlayerManager'
+import { createLabel, updateLabelText } from './LabelManager'
 
 let playerManager
 
@@ -30,6 +31,10 @@ let bullets = []
 let bulletIndex = 0
 
 let container
+
+const towerListLabel = createLabel(40)
+const availableTowersLabel = createLabel(60)
+const bulletsInGameLabel = createLabel(80)
 
 function initRenderer() {
 	container = document.getElementById('world')
@@ -236,7 +241,7 @@ function animate() {
 
 	playerManager.keyboard.handleKeyboardEvents(hero, KEYS)
 
-	if (playerManager.availableTowers > 1) {
+	if (playerManager.availableTowers > 0) {
 		if (playerManager.keyboard.handleSpawnTowerKey(hero, KEYS)) {
 			playerManager.availableTowers -= 1
 		}
@@ -247,6 +252,10 @@ function animate() {
 	// particleSystem.rotation.y += 0.01
 
 	bulletLogic()
+
+	updateLabelText(towerListLabel, `New towers built: ${towerList.length}`)
+	updateLabelText(availableTowersLabel, `Available towers: ${playerManager.availableTowers}`)
+	updateLabelText(bulletsInGameLabel, `Bullets in game: ${bullets.length}`)
 
 	render()
 }
