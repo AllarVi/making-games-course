@@ -40,6 +40,12 @@ export const blueMat = new MeshPhongMaterial({
 	flatShading: FlatShading,
 })
 
+
+export const greenMat = new MeshPhongMaterial({
+	color: 0x2eb82e,
+	flatShading: FlatShading,
+})
+
 export const redMat = new MeshPhongMaterial({
 	color: 0xf44250,
 	flatShading: FlatShading,

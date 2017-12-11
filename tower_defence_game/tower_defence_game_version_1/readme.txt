@@ -1,0 +1,1 @@
+Mängu mängimiseks avada dist kaustas olev index.html fail veebilehitsejas.

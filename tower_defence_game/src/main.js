@@ -11,7 +11,7 @@ import { createLabel, updateLabelText } from './LabelManager'
 const Stats = require('stats.js')
 
 const stats = new Stats()
-stats.showPanel(2) // 0: fps, 1: ms, 2: mb, 3+: custom
+stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 
 let playerManager
@@ -25,6 +25,7 @@ let hero
 let villain
 let villainActivityManager
 const villainVector3 = new THREE.Vector3()
+let villainsKilled = 0
 
 const towerList = []
 
@@ -42,8 +43,10 @@ const towerListLabel = createLabel(40, 200)
 const availableTowersLabel = createLabel(60, 200)
 const bulletsInGameLabel = createLabel(80, 200)
 const villainPositionLabel = createLabel(100, 200)
+const playerPositionLabel = createLabel(120, 200)
 
-const healthLabel = createLabel(40, 800)
+const villagersLeftLabel = createLabel(40, 800)
+const villainsKilledLabel = createLabel(60, 800)
 
 let skyboxMesh
 
@@ -247,6 +250,7 @@ function bulletLogic() {
 			restartVillain()
 
 			playerManager.availableTowers += 1
+			villainsKilled += 1
 		}
 	})
 
@@ -258,8 +262,10 @@ function updateLabels() {
 	updateLabelText(availableTowersLabel, `Available towers: ${playerManager.availableTowers}`)
 	updateLabelText(bulletsInGameLabel, `Bullets in game: ${bullets.length}`)
 	updateLabelText(villainPositionLabel, `(Enemy position) X: ${villain.mesh.position.x} Z: ${villain.mesh.position.z}`)
+	updateLabelText(playerPositionLabel, `(Player position) X: ${hero.mesh.position.x} Z: ${hero.mesh.position.z}`)
 
-	updateLabelText(healthLabel, `Health: ${playerManager.health}`)
+	updateLabelText(villagersLeftLabel, `Villagers left: ${playerManager.health}`)
+	updateLabelText(villainsKilledLabel, `Score points: ${villainsKilled}`)
 }
 
 function animate() {
@@ -352,7 +358,7 @@ function initFloor() {
 	floorTexture.wrapS = THREE.RepeatWrapping
 	floorTexture.wrapT = THREE.RepeatWrapping
 	floorTexture.offset.set(0, 0)
-	floorTexture.repeat.set(4, 4)
+	floorTexture.repeat.set(5, 5)
 
 	const material = new THREE.MeshBasicMaterial({ map: floorTexture, side: THREE.DoubleSide })
 	// const material = new THREE.MeshBasicMaterial({ color: 0xD9EEFC })

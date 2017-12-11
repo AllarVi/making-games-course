@@ -26,24 +26,36 @@ export default class Keyboard {
 
 	handleKeyboardEvents(hero, keys) {
 		if (keys.W in this.keysDown) {
+			hero.run()
+			if (hero.mesh.position.z < -470) {
+				return
+			}
 			hero.mesh.position.z -= 1
 			hero.mesh.rotation.y = Math.PI / 2
-			hero.run()
 		}
 		if (keys.S in this.keysDown) {
+			hero.run()
+			if (hero.mesh.position.z > 40) {
+				return
+			}
 			hero.mesh.position.z += 1
 			hero.mesh.rotation.y = Math.PI + (Math.PI / 2)
-			hero.run()
 		}
 		if (keys.A in this.keysDown) {
+			hero.run()
+			if (hero.mesh.position.x < -250) {
+				return
+			}
 			hero.mesh.position.x -= 1
 			hero.mesh.rotation.y = Math.PI
-			hero.run()
 		}
 		if (keys.D in this.keysDown) {
+			hero.run()
+			if (hero.mesh.position.x > 285) {
+				return
+			}
 			hero.mesh.position.x += 1
 			hero.mesh.rotation.y = 0
-			hero.run()
 		}
 
 		if (keys.SPACE in this.keysDown) {

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { blueMat, brownMat, MATERIAL_COLORS as MATERIALS_COLORS, redMat } from './constants'
+import { brownMat, greenMat, MATERIAL_COLORS as MATERIALS_COLORS, redMat } from './constants'
 
 export default class Hero {
 	constructor(materialColor) {
@@ -14,7 +14,7 @@ export default class Hero {
 		if (materialColor === MATERIALS_COLORS.RED) {
 			mainMaterial = redMat
 		} else if (materialColor === MATERIALS_COLORS.BLUE) {
-			mainMaterial = blueMat
+			mainMaterial = greenMat
 		}
 
 		const torsoGeom = new THREE.CubeGeometry(8, 8, 8, 1)
@@ -213,14 +213,14 @@ export default class Hero {
 	}
 
 	moveDown() {
-		// this.run()
+		this.run()
 
 		this.mesh.position.z += 0.5
 		this.mesh.rotation.y = Math.PI + (Math.PI / 2)
 	}
 
 	moveRight() {
-		// this.run()
+		this.run()
 
 		this.mesh.position.x += 0.5
 		this.mesh.rotation.y = 0
